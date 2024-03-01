@@ -27,6 +27,7 @@ public class Pokemon implements Serializable {
 	private transient JSONObject speciesInfo;
 	private String spriteFrontUrl;
 	private String spriteBackUrl;
+	private String iconUrl;
 	private transient JSONArray types;
 	private float max_hp;
 	private float cur_hp;
@@ -39,6 +40,7 @@ public class Pokemon implements Serializable {
 	private ArrayList<String>[] move_list = new ArrayList[100];
 	private Move[] moves = new Move[1];
 	private String catch_date;
+	private String eo; 
 
 	// Constructor que recibe id y nivel
 	public Pokemon(int id, int level) throws IOException {
@@ -89,9 +91,13 @@ public class Pokemon implements Serializable {
 
 		this.spriteFrontUrl = this.pokemonInfo.getJSONObject("sprites").getJSONObject("other").getJSONObject("showdown")
 				.getString("front_default");
+		
 		this.spriteBackUrl = this.pokemonInfo.getJSONObject("sprites").getJSONObject("other").getJSONObject("showdown")
 				.getString("back_default");
 
+		this.setIconUrl(this.pokemonInfo.getJSONObject("sprites").getJSONObject("versions").getJSONObject("generation-viii")
+				.getJSONObject("icons").getString("front_default"));
+		
 		this.types = this.pokemonInfo.getJSONArray("types");
 
 		JSONArray stats = this.pokemonInfo.getJSONArray("stats");
@@ -365,6 +371,22 @@ public class Pokemon implements Serializable {
 
 	public void setFecha_captura(String fecha_captura) {
 		this.catch_date = fecha_captura;
+	}
+
+	public String getIconUrl() {
+		return iconUrl;
+	}
+
+	public void setIconUrl(String iconUrl) {
+		this.iconUrl = iconUrl;
+	}
+
+	public String getEo() {
+		return eo;
+	}
+
+	public void setEo(String eo) {
+		this.eo = eo;
 	}
 
 	private static JSONObject getInfo(String url) throws IOException {

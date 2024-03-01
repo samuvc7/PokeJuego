@@ -25,6 +25,7 @@ import javax.swing.border.LineBorder;
 
 import clases.Pokemon;
 import clases.SaveData;
+import clases.Trainer;
 import controlador.generacionesStarters;
 
 public class StarterSelectionWindow {
@@ -99,7 +100,6 @@ public class StarterSelectionWindow {
 		generaciones.add("Generación 6");
 		generaciones.add("Generación 7");
 		generaciones.add("Generación 8");
-		generaciones.add("Generación 9");
 		DefaultComboBoxModel<String> comboBoxModel = new DefaultComboBoxModel<>(generaciones.toArray(new String[0]));
 		cb_generaciones.setModel(comboBoxModel);
 		
@@ -241,11 +241,6 @@ public class StarterSelectionWindow {
                 nombrePlanta = "Grookey";
                 nombreFuego = "Scorbunny";
                 break;
-            case "Generación 9":
-                nombreAgua = "Quaxly";
-                nombrePlanta = "Sprigatito";
-                nombreFuego = "Fuecoco";
-                break;
             // Puedes agregar casos para otras generaciones aquí si es necesario
             default:
                 // Manejo para generaciones no implementadas o no válidas
@@ -319,13 +314,15 @@ public class StarterSelectionWindow {
 		btnJugar.addActionListener(new ActionListener() {
 			@Override
             public void actionPerformed(ActionEvent e) {
+				Trainer trainer;
 				Pokemon pokemon;
 				String pkname = nombrePokemon.toLowerCase();
 				try {
 					pokemon = new Pokemon(pkname, 5);
-					SaveData.guardarPokemon(pokemon);
+					trainer = new Trainer("Samu", pokemon);
+					SaveData.saveTrainer(trainer);
 					
-					new MenuWindow(pokemon);
+					new MenuWindow(trainer);
 	                frame.dispose(); // asumiendo que "frmPokochi" es la instancia de tu ventana actual
 	                
 				} catch (IOException e1) {

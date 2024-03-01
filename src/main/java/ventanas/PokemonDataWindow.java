@@ -9,23 +9,29 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.PlainDocument;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import clases.Move;
 import clases.Pokemon;
+import clases.Trainer;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
@@ -38,6 +44,8 @@ import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.JProgressBar;
 import javax.swing.JTabbedPane;
+import javax.swing.JTextField;
+
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
@@ -48,34 +56,91 @@ import java.awt.Cursor;
 
 public class PokemonDataWindow {
 	private JFrame frmDatos;
+	private boolean front;
 
-	public PokemonDataWindow(JFrame parent, Pokemon pokemon) throws IOException {
+	public PokemonDataWindow(JFrame parent, Trainer trainer, Pokemon pokemon) throws IOException {
 
-		// pokemon.setCur_hp(pokemon.getMax_hp() - 12);
-
+		front = true;
+		
 		frmDatos = new JFrame();
 		frmDatos.setResizable(false);
 		frmDatos.setTitle("Datos de " + pokemon.getNick());
 		frmDatos.getContentPane().setBackground(new Color(135, 206, 235));
 		frmDatos.getContentPane().setLayout(null);
-
+		
 		// ====================== Cambiar el mote del Pokémon ======================
 		ImageIcon image_lapiz = new ImageIcon(
 				new ImageIcon("images/lapiz.png").getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH));
 		JButton btn_changeNick = new JButton(image_lapiz);
+		btn_changeNick.setToolTipText("Cambiar mote del Pokémon");
+		btn_changeNick.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+                // Abre el diálogo para cambiar el mote del Pokémon
+                ChangeNickDialog dialog = new ChangeNickDialog(frmDatos, pokemon);
+                dialog.setVisible(true);
+                
+				try {
+					new PokemonDataWindow(parent, trainer, pokemon);
+					frmDatos.dispose();
+					
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+
+                
+			}
+		});
 		btn_changeNick.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btn_changeNick.setBounds(295, 20, 32, 32);
 		frmDatos.getContentPane().add(btn_changeNick);
 		btn_changeNick.setBorderPainted(false); // Elimina el borde
 		btn_changeNick.setContentAreaFilled(false); // Elimina el relleno del área de contenido
 		btn_changeNick.setFocusPainted(false);
-
+		
 		// ====================== Cargar el gif del Pokémon ======================
 		ImageIcon imageIcon = new ImageIcon(new URL(pokemon.getSpriteFrontUrl()));
 		JLabel lbl_sprite = new JLabel(imageIcon);
 		lbl_sprite.setBackground(new Color(255, 255, 255));
 		lbl_sprite.setBounds(322, 45, 250, 250);
 		frmDatos.getContentPane().add(lbl_sprite);
+		
+		// ===================== Botón para girar el sprite =====================
+		JButton btn_rotateSprite = new JButton();
+		ImageIcon image_rotate = new ImageIcon(
+				new ImageIcon("images/deshacer.png").getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH));
+		btn_rotateSprite.setIcon(image_rotate);
+		btn_rotateSprite.setToolTipText("Girar el gráfico del Pokémon");
+		btn_rotateSprite.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				ImageIcon imageIcon;
+				try {
+					if (front) {
+						imageIcon = new ImageIcon(new URL(pokemon.getSpriteBackUrl()));
+						lbl_sprite.setIcon(imageIcon);
+						front = false;
+					} else {
+						imageIcon = new ImageIcon(new URL(pokemon.getSpriteFrontUrl()));
+						lbl_sprite.setIcon(imageIcon);
+						front = true;
+
+					}
+
+
+				} catch (MalformedURLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+
+				
+			}
+		});
+		btn_rotateSprite.setBounds(294, 210, 32, 32);
+		btn_rotateSprite.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btn_rotateSprite.setBorderPainted(false); // Elimina el borde
+		btn_rotateSprite.setContentAreaFilled(false); // Elimina el relleno del área de contenido
+		btn_rotateSprite.setFocusPainted(false);
+		frmDatos.getContentPane().add(btn_rotateSprite);
 
 		// ====================== Cabecera con información básica del Pokémon ======================
 		JPanel panel_header = new JPanel();
@@ -189,6 +254,13 @@ public class PokemonDataWindow {
 		lbl_fechaCaptura.setBounds(5, 5, 150, 20);
 		panel_data.add(lbl_fechaCaptura);
 		
+		JLabel lbl_eo = new JLabel("EO " + pokemon.getEo());
+		lbl_eo.setToolTipText("Nombre del entrenador original");
+		lbl_eo.setForeground(Color.WHITE);
+		lbl_eo.setFont(new Font("Consolas", Font.BOLD, 10));
+		lbl_eo.setBounds(5, 30, 150, 20);
+		panel_data.add(lbl_eo);
+		
 		// Info Ataques
 		JLabel lbl_moveName = new JLabel("");
 		lbl_moveName.setForeground(Color.WHITE);
@@ -235,6 +307,37 @@ public class PokemonDataWindow {
 		lbl_moveDesc.setBounds(5, 30, 467, 20);
 		panel_data.add(lbl_moveDesc);
 		lbl_moveDesc.setVisible(false);
+		
+		// ===================== Botón para mostrar la info =====================
+		JButton btn_showInfo = new JButton();
+		btn_showInfo.setToolTipText("Mostrar más información");
+		ImageIcon image_agregar = new ImageIcon(
+				new ImageIcon("images/agregar.png").getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH));
+		btn_showInfo.setIcon(image_agregar);
+		btn_showInfo.setBorderPainted(false); // Elimina el borde
+		btn_showInfo.setContentAreaFilled(false); // Elimina el relleno del área de contenido
+		btn_showInfo.setFocusPainted(false);
+		btn_showInfo.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btn_showInfo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				lbl_moveName.setVisible(false);
+				lbl_moveType.setVisible(false);
+				lbl_damage.setVisible(false);
+				lbl_movePower.setVisible(false);
+				lbl_moveAccuracy.setVisible(false);
+				lbl_moveDesc.setVisible(false);
+				
+				lbl_fechaCaptura.setVisible(true);
+				lbl_eo.setVisible(true);
+
+				panel_data.setVisible(false);
+				panel_data.setVisible(true);
+
+				
+			}
+		});
+		btn_showInfo.setBounds(294, 250, 32, 32);
+		frmDatos.getContentPane().add(btn_showInfo);
 
 		// ====================== Panel con las estadisticas ======================
 		JPanel panel_stats = new JPanel();
@@ -379,6 +482,7 @@ public class PokemonDataWindow {
 		btn_move1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				lbl_fechaCaptura.setVisible(false);
+				lbl_eo.setVisible(false);
 				
 				lbl_moveName.setText(pokemon.getMoves()[0].getName());
 				lbl_moveName.setVisible(true);
@@ -429,6 +533,7 @@ public class PokemonDataWindow {
 			btn_move2.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					lbl_fechaCaptura.setVisible(false);
+					lbl_eo.setVisible(false);
 					
 					lbl_moveName.setText(pokemon.getMoves()[1].getName());
 					lbl_moveName.setVisible(true);
@@ -481,6 +586,7 @@ public class PokemonDataWindow {
 			btn_move3.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					lbl_fechaCaptura.setVisible(false);
+					lbl_eo.setVisible(false);
 
 					lbl_moveName.setText(pokemon.getMoves()[2].getName());
 					lbl_moveName.setVisible(true);
@@ -533,6 +639,7 @@ public class PokemonDataWindow {
 			btn_move4.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					lbl_fechaCaptura.setVisible(false);
+					lbl_eo.setVisible(false);
 
 					lbl_moveName.setText(pokemon.getMoves()[3].getName());
 					lbl_moveName.setVisible(true);
@@ -607,28 +714,165 @@ public class PokemonDataWindow {
 		frmDatos.getContentPane().add(lbl_bg);
 
 		// Botones para navegar entre diferentes miembros del equipo
-		JButton btn_pk1 = new JButton("");
+		JButton btn_pk1 = new JButton();
 		btn_pk1.setBounds(0, 0, 74, 64);
+		if (trainer.getTeam()[0] != null) {
+			ImageIcon icon1 = new ImageIcon(new URL(trainer.getTeam()[0].getIconUrl()));
+			btn_pk1.setIcon(icon1);
+			
+			btn_pk1.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					try {
+						new PokemonDataWindow(parent, trainer, trainer.getTeam()[0]);
+						frmDatos.dispose();
+						parent.setEnabled(false);
+
+
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					
+				}
+			});
+			
+		}
+		btn_pk1.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btn_pk1.setFocusPainted(false);
 		frmDatos.getContentPane().add(btn_pk1);
 
 		JButton btn_pk2 = new JButton("");
 		btn_pk2.setBounds(0, 64, 74, 64);
+		if (trainer.getTeam()[1] != null) {
+			ImageIcon icon1 = new ImageIcon(new URL(trainer.getTeam()[1].getIconUrl()));
+			btn_pk2.setIcon(icon1);
+			
+			btn_pk2.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					try {
+						new PokemonDataWindow(parent, trainer, trainer.getTeam()[1]);
+						frmDatos.dispose();
+						parent.setEnabled(false);
+
+
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					
+				}
+			});
+			
+		}
+		btn_pk2.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btn_pk2.setFocusPainted(false);
 		frmDatos.getContentPane().add(btn_pk2);
 
 		JButton btn_pk3 = new JButton("");
 		btn_pk3.setBounds(0, 128, 74, 64);
+		if (trainer.getTeam()[2] != null) {
+			ImageIcon icon1 = new ImageIcon(new URL(trainer.getTeam()[2].getIconUrl()));
+			btn_pk3.setIcon(icon1);
+			
+			btn_pk3.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					try {
+						new PokemonDataWindow(parent, trainer, trainer.getTeam()[2]);
+						frmDatos.dispose();
+						parent.setEnabled(false);
+
+
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					
+				}
+			});
+			
+		}
+		btn_pk3.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btn_pk3.setFocusPainted(false);
 		frmDatos.getContentPane().add(btn_pk3);
 
 		JButton btn_pk4 = new JButton("");
 		btn_pk4.setBounds(0, 192, 74, 64);
+		if (trainer.getTeam()[3] != null) {
+			ImageIcon icon1 = new ImageIcon(new URL(trainer.getTeam()[3].getIconUrl()));
+			btn_pk4.setIcon(icon1);
+			
+			btn_pk4.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					try {
+						new PokemonDataWindow(parent, trainer, trainer.getTeam()[3]);
+						frmDatos.dispose();
+						parent.setEnabled(false);
+
+
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					
+				}
+			});
+			
+		}
+		btn_pk4.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btn_pk4.setFocusPainted(false);
 		frmDatos.getContentPane().add(btn_pk4);
 
 		JButton btn_pk5 = new JButton("");
 		btn_pk5.setBounds(0, 256, 74, 64);
+		if (trainer.getTeam()[4] != null) {
+			ImageIcon icon1 = new ImageIcon(new URL(trainer.getTeam()[4].getIconUrl()));
+			btn_pk5.setIcon(icon1);
+			
+			btn_pk5.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					try {
+						new PokemonDataWindow(parent, trainer, trainer.getTeam()[4]);
+						frmDatos.dispose();
+						parent.setEnabled(false);
+
+
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					
+				}
+			});
+			
+		}
+		btn_pk5.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btn_pk5.setFocusPainted(false);
 		frmDatos.getContentPane().add(btn_pk5);
 
 		JButton btn_pk6 = new JButton("");
 		btn_pk6.setBounds(0, 320, 74, 64);
+		if (trainer.getTeam()[5] != null) {
+			ImageIcon icon1 = new ImageIcon(new URL(trainer.getTeam()[5].getIconUrl()));
+			btn_pk6.setIcon(icon1);
+			
+			btn_pk6.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					try {
+						new PokemonDataWindow(parent, trainer, trainer.getTeam()[5]);
+						frmDatos.dispose();
+						parent.setEnabled(false);
+						
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					
+				}
+			});
+			
+		}
+		btn_pk6.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btn_pk6.setFocusPainted(false);
 		frmDatos.getContentPane().add(btn_pk6);
 
 		frmDatos.setIconImage(Toolkit.getDefaultToolkit().getImage("images/pokebola.png"));
@@ -641,7 +885,7 @@ public class PokemonDataWindow {
         // Agregar un WindowListener para escuchar el evento de cierre de la ventana
         frmDatos.addWindowListener(new WindowAdapter() {
             @Override
-            public void windowClosed(WindowEvent e) {
+            public void windowClosing(WindowEvent e) {
                 // Habilitar el parent JFrame (MainFrame) cuando SecondFrame se cierra
                 parent.setEnabled(true);
             }
@@ -863,5 +1107,54 @@ public class PokemonDataWindow {
 		
 		return img;
 	}
+}
+
+class ChangeNickDialog extends JDialog {
+
+	public ChangeNickDialog(JFrame parent, Pokemon pokemon) {
+        super(parent, "Cambiar mote del Pokémon", true); // El true indica que el diálogo es modal
+        setSize(300, 150);
+		//setResizable(false);
+        setLocationRelativeTo(parent);
+        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+
+        JLabel label = new JLabel("Nuevo mote del Pokémon:");
+        label.setFont(new Font("Consolas", Font.BOLD, 14));
+		
+        JTextField textField = new JTextField(15);
+        textField.setFont(new Font("Consolas", Font.PLAIN, 10));
+        textField.setDocument(new PlainDocument() {
+			@Override
+			public void insertString(int offs, String str, AttributeSet a) throws BadLocationException {
+				if (getLength() + str.length() <= 12) { // Cambia 15 al valor máximo deseado
+					super.insertString(offs, str, a);
+				}
+			}
+		});
+        JButton btn_accept = new JButton("Aceptar");
+        btn_accept.setFont(new Font("Consolas", Font.PLAIN, 10));
+
+        btn_accept.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // Aquí puedes obtener el nuevo mote del Pokémon del JTextField
+                String newNick = textField.getText();
+                
+    			if (!newNick.trim().isEmpty()) {
+                    pokemon.setNick(newNick);
+
+    			}
+    			
+                dispose();
+
+            }
+        });
+
+        JPanel panel = new JPanel();
+        panel.add(label);
+        panel.add(textField);
+        panel.add(btn_accept);
+
+        getContentPane().add(panel);
+    }
 	
 }

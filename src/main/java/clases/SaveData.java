@@ -6,13 +6,13 @@ import java.io.ObjectOutputStream;
 
 public class SaveData {
 
-    public static void guardarPokemon(Pokemon pokemon) {
-        try (ObjectOutputStream salida = new ObjectOutputStream(new FileOutputStream("pokemon.dat"))) {
-            salida.writeObject(pokemon);
+	public static void saveTrainer(Trainer trainer) {
+        try (ObjectOutputStream salida = new ObjectOutputStream(new FileOutputStream("save.dat"))) {
+            salida.writeObject(trainer);
 
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
+	}
 
 }

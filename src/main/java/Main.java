@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 
 import clases.Pokemon;
+import clases.Trainer;
 import ventanas.MenuWindow;
 import ventanas.PokemonDataWindow;
 import ventanas.StarterSelectionWindow;
@@ -12,11 +13,9 @@ public class Main {
 
 	public static void main(String[] args) {
 		
-        try (ObjectInputStream entrada = new ObjectInputStream(new FileInputStream("pokemon.dat"))) {
-            // Leer el objeto Pokemon desde el archivo
-            Pokemon pk = (Pokemon) entrada.readObject();
-    		//new PokemonDataWindow(pk);
-            new MenuWindow(pk);
+        try (ObjectInputStream entrada = new ObjectInputStream(new FileInputStream("save.dat"))) {
+        	Trainer trainer = (Trainer) entrada.readObject();
+            new MenuWindow(trainer);
             
         } catch (FileNotFoundException e) {
         	// No hay datos guardados, elegir inicial
