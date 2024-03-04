@@ -6,7 +6,7 @@ public class Trainer implements Serializable {
 
 	private String name;
 	private Pokemon[] team;
-	
+	private String lastconnected;
 	private int level;
 	private int partner;
 	private int style;
@@ -33,6 +33,16 @@ public class Trainer implements Serializable {
 
 		
 	}
+
+	public String getLastConnected() {
+		return lastconnected;
+	}
+
+	public void setLastConnected(String lastconnected) {
+
+		this.lastconnected = lastconnected;
+	}
+
 
 	public String getName() {
 		return name;

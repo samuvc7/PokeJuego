@@ -8,6 +8,8 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -108,10 +110,15 @@ public class MenuWindow {
 		btn_save.setFocusPainted(false);
 		btn_save.setBackground(new Color(255, 255, 255));
 		btn_save.setBounds(40, 200, 200, 40);
+
 		ImageIcon iconPokedex = new ImageIcon(Toolkit.getDefaultToolkit().getImage("images/pokedex.png"));
 		btn_save.setIcon(iconPokedex);
 		btn_save.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				/// --- Guardamos el datetime de la ultima conexion en el trainer 
+				LocalDateTime ahora= LocalDateTime.now();//("01/01/01(00:00)")
+				trainer.setLastConnected(ahora.format(DateTimeFormatter.ofPattern("uuuu/MM/dd (HH:mm)")));
+
 				SaveData.saveTrainer(trainer);
 				// Muestra un mensaje de éxito al guardar la partida
 				JOptionPane.showMessageDialog(null, "Partida guardada exitosamente", "Se ha guardado la partida",

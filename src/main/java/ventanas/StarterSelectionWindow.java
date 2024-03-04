@@ -9,6 +9,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import javax.swing.DefaultComboBoxModel;
@@ -317,6 +319,10 @@ public class StarterSelectionWindow {
 				try {
 					pokemon = new Pokemon(pkname, 5);
 					trainer.addPokemon(pokemon, 0);
+
+					/// --- Guardamos el datetime de la ultima conexion en el trainer 
+					LocalDateTime ahora= LocalDateTime.now();//("01/01/01(00:00)")
+					trainer.setLastConnected(ahora.format(DateTimeFormatter.ofPattern("uuuu/MM/dd (HH:mm)")));
 					SaveData.saveTrainer(trainer);
 					
 					new MenuWindow(pokemon, trainer);
