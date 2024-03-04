@@ -44,7 +44,7 @@ public class StarterSelectionWindow {
 	private JPanel panel_agua;
 	private JPanel panel_fuego;
 
-	public StarterSelectionWindow() {
+	public StarterSelectionWindow(Trainer trainer) {
 		
 		frmPokochi = new JFrame();
 		frmPokochi.setResizable(false);
@@ -126,7 +126,7 @@ public class StarterSelectionWindow {
 		btn_grassType.setFont(new Font("Consolas", Font.PLAIN, 11));
 		btn_grassType.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				mostrarPokemon(lbl_tipoPlanta.getText());
+				mostrarPokemon(trainer, lbl_tipoPlanta.getText());
 				frmPokochi.dispose();
 			}
 		});
@@ -140,7 +140,7 @@ public class StarterSelectionWindow {
 		btn_fireType.setFont(new Font("Consolas", Font.PLAIN, 11));
 		btn_fireType.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				mostrarPokemon(lbl_tipoFuego.getText());
+				mostrarPokemon(trainer, lbl_tipoFuego.getText());
 				frmPokochi.dispose();
 			}
 		});
@@ -154,7 +154,7 @@ public class StarterSelectionWindow {
 		btn_waterType.setFont(new Font("Consolas", Font.PLAIN, 11));
 		btn_waterType.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				mostrarPokemon(lbl_tipoAgua.getText());
+				mostrarPokemon(trainer, lbl_tipoAgua.getText());
 				frmPokochi.dispose();
 			}
 		});
@@ -255,7 +255,7 @@ public class StarterSelectionWindow {
 	
 	}
 	
-	private void mostrarPokemon(String nombrePokemon) {
+	private void mostrarPokemon(Trainer trainer, String nombrePokemon) {
 		// Crear una nueva ventana emergente (JOptionPane)
 		final JFrame frame = new JFrame("¡Bienvenido!");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE );
@@ -299,7 +299,7 @@ public class StarterSelectionWindow {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// Cerrar la ventana emergente
-				new StarterSelectionWindow();
+				new StarterSelectionWindow(trainer);
 				frame.dispose();
 				
 			}
@@ -314,12 +314,11 @@ public class StarterSelectionWindow {
 		btnJugar.addActionListener(new ActionListener() {
 			@Override
             public void actionPerformed(ActionEvent e) {
-				Trainer trainer;
 				Pokemon pokemon;
 				String pkname = nombrePokemon.toLowerCase();
 				try {
 					pokemon = new Pokemon(pkname, 5);
-					trainer = new Trainer("Samu", pokemon);
+					trainer.addPokemon(pokemon, 0);
 					SaveData.saveTrainer(trainer);
 					
 					new MenuWindow(trainer);

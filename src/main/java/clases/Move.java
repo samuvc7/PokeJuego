@@ -136,6 +136,14 @@ public class Move implements Serializable {
 		this.desc = desc;
 	}
 
+	public String getRaw_name() {
+		return raw_name;
+	}
+
+	public void setRaw_name(String raw_name) {
+		this.raw_name = raw_name;
+	}
+
 	// Acceder a la API
 	private static JSONObject getInfo(String url) throws IOException {
 		HttpURLConnection connection = null;

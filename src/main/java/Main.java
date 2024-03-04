@@ -5,6 +5,7 @@ import java.io.ObjectInputStream;
 
 import clases.Pokemon;
 import clases.Trainer;
+import ventanas.ElegirEntrenador;
 import ventanas.MenuWindow;
 import ventanas.PokemonDataWindow;
 import ventanas.StarterSelectionWindow;
@@ -19,7 +20,8 @@ public class Main {
             
         } catch (FileNotFoundException e) {
         	// No hay datos guardados, elegir inicial
-    		new StarterSelectionWindow();
+    		//new StarterSelectionWindow();
+    		new ElegirEntrenador();
     		
         } catch (IOException e) {
             System.err.println("Error de entrada/salida: " + e.getMessage());

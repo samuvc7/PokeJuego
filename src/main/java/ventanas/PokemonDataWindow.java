@@ -5,6 +5,8 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedInputStream;
@@ -18,6 +20,7 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
@@ -68,6 +71,49 @@ public class PokemonDataWindow {
 		frmDatos.getContentPane().setBackground(new Color(135, 206, 235));
 		frmDatos.getContentPane().setLayout(null);
 		
+		// ====================== Exportar Pokémon ========================
+		ImageIcon image_lista = new ImageIcon(
+				new ImageIcon("images/lista.png").getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH));
+		JButton btn_export = new JButton(image_lista);
+		btn_export.setToolTipText("Exportar datos del Pokémon");
+		btn_export.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btn_export.setBounds(294, 170, 32, 32);
+		btn_export.setBorderPainted(false);
+		btn_export.setContentAreaFilled(false);
+		btn_export.setFocusPainted(false);
+		btn_export.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String pkdat = "";
+				String genero = "";
+				if (pokemon.getGender().equals("Male")) genero = "M";
+				if (pokemon.getGender().equals("Female")) genero = "F";
+				pkdat += pokemon.getNick() + " (" + pokemon.getName() + ") " + "(" + genero + ")";
+				pkdat += "\nLevel: " + pokemon.getLevel();
+				
+				for (Move move : pokemon.getMoves()) {
+					if (move != null) {
+						String movename = move.getRaw_name().substring(0,1).toUpperCase() + move.getRaw_name().substring(1).toLowerCase();
+						pkdat += "\n- " + movename;
+					}
+				}
+				
+				// Crear una selección de cadena
+		        StringSelection seleccion = new StringSelection(pkdat);
+
+		        // Obtener el sistema de portapapeles
+		        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+
+		        // Colocar la selección en el portapapeles
+		        clipboard.setContents(seleccion, null);
+		        
+		        // Mostrar mensaje al usuario
+		        JOptionPane.showMessageDialog(frmDatos, "Los datos del Pokémon se han copiado al portapapeles", "Copiado al portapapeles", JOptionPane.INFORMATION_MESSAGE);
+		        
+			}
+		});
+		frmDatos.getContentPane().add(btn_export);
+
+		
 		// ====================== Cambiar el mote del Pokémon ======================
 		ImageIcon image_lapiz = new ImageIcon(
 				new ImageIcon("images/lapiz.png").getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH));
@@ -92,7 +138,7 @@ public class PokemonDataWindow {
 			}
 		});
 		btn_changeNick.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btn_changeNick.setBounds(295, 20, 32, 32);
+		btn_changeNick.setBounds(294, 20, 32, 32);
 		frmDatos.getContentPane().add(btn_changeNick);
 		btn_changeNick.setBorderPainted(false); // Elimina el borde
 		btn_changeNick.setContentAreaFilled(false); // Elimina el relleno del área de contenido
@@ -715,6 +761,10 @@ public class PokemonDataWindow {
 
 		// Botones para navegar entre diferentes miembros del equipo
 		JButton btn_pk1 = new JButton();
+		btn_pk1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
 		btn_pk1.setBounds(0, 0, 74, 64);
 		if (trainer.getTeam()[0] != null) {
 			ImageIcon icon1 = new ImageIcon(new URL(trainer.getTeam()[0].getIconUrl()));

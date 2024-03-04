@@ -2,6 +2,7 @@ package ventanas;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
@@ -21,115 +22,112 @@ import javax.swing.JOptionPane;
 
 import java.awt.Font;
 import javax.swing.SwingConstants;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.PlainDocument;
+
+import clases.Trainer;
+
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 public class ElegirEntrenador extends JFrame{
 
-	private JFrame frame;
+	private JFrame frmPersonalizacin;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					ElegirEntrenador window = new ElegirEntrenador();
-					window.frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
-	/**
-	 * Create the application.
-	 */
 	public ElegirEntrenador() {
-		initialize();
-	}
-
-	/**
-	 * Initialize the contents of the frame.
-	 */
-	private void initialize() {
-		frame = new JFrame();
-		frame.setBounds(100, 100, 350, 300);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setLocationRelativeTo(null);
-		frame.getContentPane().setLayout(null);
+		frmPersonalizacin = new JFrame();
+		frmPersonalizacin.setTitle("Personalización");
+		frmPersonalizacin.setBounds(100, 100, 350, 300);
+		frmPersonalizacin.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frmPersonalizacin.setLocationRelativeTo(null);
+		frmPersonalizacin.setResizable(false);
+		frmPersonalizacin.setIconImage(Toolkit.getDefaultToolkit().getImage("images/pokebola.png"));
+		frmPersonalizacin.getContentPane().setLayout(null);
 		
 		JLabel lbl_info = new JLabel("Seleccione el género de su personaje");
 		lbl_info.setHorizontalAlignment(SwingConstants.CENTER);
 		lbl_info.setFont(new Font("Consolas", Font.BOLD, 15));
 		lbl_info.setBounds(10, 10, 316, 46);
-		frame.getContentPane().add(lbl_info);
+		frmPersonalizacin.getContentPane().add(lbl_info);
 		
-		JButton boton_chica = new JButton("");
-		boton_chica.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-				nombreEntrenador("chica");
-				frame.dispose();
-				
-			}
-		});
-		boton_chica.setBounds(180, 86, 146, 175);
-		boton_chica.setBorderPainted(false);
-		boton_chica.setContentAreaFilled(false);
-		ImageIcon iconChica = new ImageIcon(Toolkit.getDefaultToolkit().getImage("images/EntrenadoraChica.png"));
-		boton_chica.setIcon(iconChica);
-		frame.getContentPane().add(boton_chica);
-		
+		// ========= CHICO ===========
 		JPanel panel_azul = new JPanel();
-		panel_azul.setBounds(0, 82, 170, 221);
+		panel_azul.setBounds(0, 82, 170, 181);
 		panel_azul.setBackground(new Color(137,207,240));
-		frame.getContentPane().add(panel_azul);
+		frmPersonalizacin.getContentPane().add(panel_azul);
 		panel_azul.setLayout(null);
 		
+		// Botón
 		JButton boton_chico = new JButton("");
-		boton_chico.setBounds(10, 0, 146, 175);
+		boton_chico.setBounds(0, 0, 170, 181);
+		boton_chico.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		boton_chico.setBorderPainted(false);
+		boton_chico.setContentAreaFilled(false);
+		boton_chico.setFocusPainted(false);
+		ImageIcon iconChico = new ImageIcon(Toolkit.getDefaultToolkit().getImage("images/Entrenador1.png"));
+		boton_chico.setIcon(iconChico);
+
 		panel_azul.add(boton_chico);
 		boton_chico.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
 				nombreEntrenador("chico");
-				frame.dispose();
+				frmPersonalizacin.dispose();
 			}
 		});
-		boton_chico.setBorderPainted(false);
-		boton_chico.setContentAreaFilled(false);
-		ImageIcon iconChico = new ImageIcon(Toolkit.getDefaultToolkit().getImage("images/EntrenadorChico2.png"));
-		boton_chico.setIcon(iconChico);
-
+		
+		// ======== CHICA =========
 		JPanel panel_rosa = new JPanel();
-		panel_rosa.setBounds(169, 82, 175, 221);
+		panel_rosa.setBounds(169, 82, 170, 181);
 		panel_rosa.setBackground(new Color(245,195,194));
-		frame.getContentPane().add(panel_rosa);
+		frmPersonalizacin.getContentPane().add(panel_rosa);
 		panel_rosa.setLayout(null);
 		
+		// Botón
+		JButton boton_chica = new JButton("");
+		boton_chica.setContentAreaFilled(false);
+		boton_chica.setBorderPainted(false);
+		boton_chica.setFocusPainted(false);
+		boton_chica.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		boton_chica.setBounds(0, 0, 170, 181);
+		ImageIcon iconChica = new ImageIcon(Toolkit.getDefaultToolkit().getImage("images/Entrenador2.png"));
+		boton_chica.setIcon(iconChica);
+		panel_rosa.add(boton_chica);
+		
+		boton_chica.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				nombreEntrenador("chica");
+				frmPersonalizacin.dispose();
+			}
+		});
+		
+		/*
+		// ========== ICONOS ============
 		JLabel lbl_masculino = new JLabel("");
-		lbl_masculino.setBounds(75, 51, 24, 30);
+		lbl_masculino.setBounds(64, 51, 24, 30);
 		frame.getContentPane().add(lbl_masculino);
 		lbl_masculino.setHorizontalAlignment(SwingConstants.CENTER);
-		ImageIcon iconMasculino = new ImageIcon(Toolkit.getDefaultToolkit().getImage("images/masculino.png"));
+		ImageIcon iconMasculino = new ImageIcon(Toolkit.getDefaultToolkit().getImage("images/trainer1.png"));
 		lbl_masculino.setIcon(iconMasculino);
 
 		JLabel lbl_femenino = new JLabel("");
 		lbl_femenino.setBounds(240, 51, 24, 30);
 		frame.getContentPane().add(lbl_femenino);
-		ImageIcon iconFemenino = new ImageIcon(Toolkit.getDefaultToolkit().getImage("images/femenino.png"));
+		ImageIcon iconFemenino = new ImageIcon(Toolkit.getDefaultToolkit().getImage("images/trainer2.png"));
 		lbl_femenino.setIcon(iconFemenino);
+		 */
 
-		frame.setVisible(true);
+		frmPersonalizacin.setVisible(true);
 	}
 	
 	private void nombreEntrenador(String genero) {
 		
 		final JFrame frame = new JFrame("Entrenador");
+		frame.setTitle("Personalización");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE );
+		frame.setIconImage(Toolkit.getDefaultToolkit().getImage("images/pokebola.png"));
 		frame.setResizable(false);
 		
 		JPanel panel = new JPanel();
@@ -143,16 +141,16 @@ public class ElegirEntrenador extends JFrame{
 		panel.add(lbl_informacion);
 		
 		JLabel lbl_imagenEntrenador = new JLabel("");
-		lbl_imagenEntrenador.setBounds(0, 53, 173, 160);
+		lbl_imagenEntrenador.setBounds(64, 50, 64, 128);
 		lbl_imagenEntrenador.setHorizontalAlignment(SwingConstants.CENTER);
 		if(genero.equals("chica")) {
 			
-			ImageIcon iconChica = new ImageIcon(Toolkit.getDefaultToolkit().getImage("images/EntrenadoraChica.png"));
+			ImageIcon iconChica = new ImageIcon(Toolkit.getDefaultToolkit().getImage("images/Entrenador2.png"));
 			lbl_imagenEntrenador.setIcon(iconChica);
 			
 		}else {
 			
-			ImageIcon iconChico = new ImageIcon(Toolkit.getDefaultToolkit().getImage("images/EntrenadorChico2.png"));
+			ImageIcon iconChico = new ImageIcon(Toolkit.getDefaultToolkit().getImage("images/Entrenador1.png"));
 			lbl_imagenEntrenador.setIcon(iconChico);
 		}
 		
@@ -160,8 +158,17 @@ public class ElegirEntrenador extends JFrame{
 		
 		final JTextField txtF_nombreEntrenador = new JTextField(20);
 		txtF_nombreEntrenador.setBounds(183, 116, 204, 33);
+		txtF_nombreEntrenador.setFont(new Font("Consolas", Font.PLAIN, 18));
 		panel.add(txtF_nombreEntrenador);
 		txtF_nombreEntrenador.setColumns(10);
+		txtF_nombreEntrenador.setDocument(new PlainDocument() {
+			@Override
+			public void insertString(int offs, String str, AttributeSet a) throws BadLocationException {
+				if (getLength() + str.length() <= 12) { // Cambia 15 al valor máximo deseado
+					super.insertString(offs, str, a);
+				}
+			}
+		});
 		
 		panel.add(txtF_nombreEntrenador);
 		
@@ -183,6 +190,14 @@ public class ElegirEntrenador extends JFrame{
 					JOptionPane.showMessageDialog(frame, "El nombre no puede estar vacío.", "Error", JOptionPane.ERROR_MESSAGE);
 				}else {
 					//conectar con la siguiente ventana
+					int style = 1;
+					if (genero.equals("chica")) {
+						style = 2;
+					}
+					
+					Trainer trainer = new Trainer(txtF_nombreEntrenador.getText(), style);
+					new StarterSelectionWindow(trainer);
+					frame.dispose();
 					
 				}
 				
