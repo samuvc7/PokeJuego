@@ -7,8 +7,7 @@ import clases.Pokemon;
 import clases.Trainer;
 import ventanas.ElegirEntrenador;
 import ventanas.MenuWindow;
-import ventanas.PokemonDataWindow;
-import ventanas.StarterSelectionWindow;
+
 
 public class Main {
 
@@ -16,7 +15,9 @@ public class Main {
 		
         try (ObjectInputStream entrada = new ObjectInputStream(new FileInputStream("save.dat"))) {
         	Trainer trainer = (Trainer) entrada.readObject();
-            new MenuWindow(trainer);
+            Pokemon pokemon = trainer.getTeam()[0];
+
+            new MenuWindow(pokemon, trainer);
             
         } catch (FileNotFoundException e) {
         	// No hay datos guardados, elegir inicial

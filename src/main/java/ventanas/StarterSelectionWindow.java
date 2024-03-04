@@ -2,11 +2,9 @@ package ventanas;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Toolkit;
-import java.awt.Window.Type;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -321,7 +319,7 @@ public class StarterSelectionWindow {
 					trainer.addPokemon(pokemon, 0);
 					SaveData.saveTrainer(trainer);
 					
-					new MenuWindow(trainer);
+					new MenuWindow(pokemon, trainer);
 	                frame.dispose(); // asumiendo que "frmPokochi" es la instancia de tu ventana actual
 	                
 				} catch (IOException e1) {
