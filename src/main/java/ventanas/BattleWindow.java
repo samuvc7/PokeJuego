@@ -617,79 +617,252 @@ public class BattleWindow {
 	
 	private void showMoves() {
 		// Dialog Equipo
-        JDialog dialog = new JDialog((JFrame) null, "Seleccionar Ataque", true);
-        dialog.setSize(frame.getWidth() / 2, frame.getHeight());
-        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(4, 1));
-        for (int i = 0; i < pokemon.getMoves().length; i++) {
+		JDialog dialog = new JDialog((JFrame) null, "Seleccionar Ataque", true);
+		dialog.setSize(frame.getWidth() / 2, frame.getHeight());
+		dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+	
+		JPanel panel = new JPanel();
+		panel.setLayout(new GridLayout(4, 1));
+		for (int i = 0; i < pokemon.getMoves().length; i++) {
 			Move move = pokemon.getMoves()[i];
-
+	
 			// Crear un botón con cada movimiento
 			JButton btn = new JButton(move.getName());
 			btn.setFont(new Font("Consolas", Font.BOLD, 11));
 			btn.setForeground(Color.BLACK);
 			btn.setHorizontalTextPosition(SwingConstants.CENTER);
-			btn.setVerticalTextPosition(SwingConstants.BOTTOM);	
+			btn.setVerticalTextPosition(SwingConstants.BOTTOM);
 			btn.setFocusable(false);
 			btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 			btn.setFocusPainted(false);
 			btn.setForeground(Color.WHITE);
 			btn.setBackground(obtenerColorTipo(pokemon.getMoves()[i]));
-
+	
 			// Boton para usar un movimiento
 			btn.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					dialog.dispose();
 					
-					if (pokemon.getSpeed() > enemy.getSpeed()) {
-						// Ataque del Pokémon
-						ataque(pokemon, move, enemy);
-
-				        // Acceder aleatoriamente a un movimiento del Pokémon
-				        Random random = new Random();
-				        int indiceAleatorio = random.nextInt(enemy.getMoves().length);
-				        Move move2 = enemy.getMoves()[indiceAleatorio];
-				    	// Ataque del enemigo
-				    	ataque(enemy, move2, pokemon);
-					} else {
-				        // Acceder aleatoriamente a un movimiento del Pokémon
-				        Random random = new Random();
-				        int indiceAleatorio = random.nextInt(enemy.getMoves().length);
-				        Move move2 = enemy.getMoves()[indiceAleatorio];
-				    	// Ataque del enemigo
-				    	ataque(enemy, move2, pokemon);
-				    	
-				    	// Ataque del Pokémon
-						ataque(pokemon, move, enemy);
-					}
-
-			    	
-
+					// Ejecutar el ataque del Pokémon del jugador
+					ataquePokemonJugador(move);
+	
+					// Luego de que el jugador ataque, ejecutar el ataque del Pokémon enemigo
+					Timer timer = new Timer(3000, new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							// Acceder aleatoriamente a un movimiento del Pokémon enemigo
+							Random random = new Random();
+							int indiceAleatorio = random.nextInt(enemy.getMoves().length);
+							Move move2 = enemy.getMoves()[indiceAleatorio];
+							// Ataque del enemigo
+							ataquePokemonEnemigo(move2);
+						}
+					});
+					timer.setRepeats(false); // Para que el timer se ejecute solo una vez
+					timer.start();
 				}
 			});// fin btn JDialog
 			panel.add(btn);
-
 		}
-        
-        JScrollPane scrollPane = new JScrollPane(panel);
-        dialog.getContentPane().add(scrollPane);
-        dialog.setLocation(frame.getLocation().x + frame.getWidth() + 5, frame.getLocation().y);
+	
+		JScrollPane scrollPane = new JScrollPane(panel);
+		dialog.getContentPane().add(scrollPane);
+		dialog.setLocation(frame.getLocation().x + frame.getWidth() + 5, frame.getLocation().y);
 		dialog.setIconImage(new ImageIcon(getClass().getClassLoader().getResource("pokebola.png")).getImage());
-        dialog.setVisible(true);
-        
+		dialog.setVisible(true);
+	
 		// Agregar un WindowListener para escuchar el evento de cierre de la ventana
-        dialog.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosed(WindowEvent e) {
-            	frame.setVisible(false);
-            	frame.setVisible(true);
-                frame.setEnabled(true);
-            }
-        });
-		
+		dialog.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosed(WindowEvent e) {
+				frame.setVisible(false);
+				frame.setVisible(true);
+				frame.setEnabled(true);
+			}
+		});
 	}
+
+	private void ataquePokemonJugador(Move move) {
+		btnLuchar.setEnabled(false);
+		btnPokemon.setEnabled(false);
+		btnHuir.setEnabled(false);
+	
+		String msg = pokemon.getNick() + " ha usado " + move.getName();
+		txtArea_ctrl.setText(""); // Limpiar el texto existente en el JTextArea
+		escribirPocoAPoco(msg, 30); // Llamar al método para escribir poco a poco
+	
+		// Lógica para escribir el segundo mensaje después del primero
+		Timer timer = new Timer(30 * msg.length() + 500, null); // Ajusta el tiempo según el primer mensaje
+		timer.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				btnLuchar.setEnabled(false);
+				btnPokemon.setEnabled(false);
+				btnHuir.setEnabled(false);
+	
+				String msg;
+				if (move.getPower() > 0) {
+					// Lógica del Ataque
+					Random random = new Random();
+					int resultado = random.nextInt(100); // Generar un número aleatorio del 0 al 99
+	
+					if (resultado < move.getAccuracy()) {
+						// El ataque tiene éxito
+	
+						// Bonus por Stab
+						double B = 1;
+						JSONArray types = pokemon.getTypes();
+						for (int i = 0; i < types.length(); i++) {
+							JSONObject type = types.getJSONObject(i).getJSONObject("type");
+							String nameType = type.getString("name");
+	
+							if (nameType.equals(move.getName())) B = 1.5;
+	
+						}
+	
+						// Efectividad
+						double E = 1;
+						try {
+							E = efective(move.getType(), enemy.getTypes());
+	
+						} catch (IOException e1) {
+							e1.printStackTrace();
+						}
+	
+						// Variable random
+						random = new Random();
+						resultado = random.nextInt(16) + 85; // Generar un número aleatorio del 85 al 100
+						int V = resultado;
+	
+						int N = pokemon.getLevel();
+	
+						// Stat At
+						int A = pokemon.getAtk();
+						if (move.getDamage().equals("special")) {
+							A = pokemon.getSp_atk();
+						}
+	
+						// Poder
+						int P = move.getPower();
+	
+						// Stat Def
+						int D = enemy.getDef();
+						if (move.getDamage().equals("special")) {
+							D = enemy.getSp_def();
+						}
+	
+						double damage = 0.01 * B * E * V * ((((0.2 * N + 1) * A * P) / (25 * D)) + 2);
+	
+						updateBar(enemy, damage);
+	
+						msg = "¡El ataque de " + pokemon.getNick() + " fue exitoso!";
+	
+					} else {
+						// El ataque falla debido a la baja precisión
+						msg = "El ataque de " + pokemon.getNick() + " ha fallado.";
+					}
+				} else {
+					msg = "El ataque de " + pokemon.getNick() + " ha fallado.";
+				}
+				txtArea_ctrl.setText(""); // Limpiar el texto existente en el JTextArea
+				escribirPocoAPoco(msg, 30); // Escribir el segundo mensaje
+	
+				timer.stop(); // Detener el timer después de escribir el segundo mensaje
+			}
+	
+		});
+		timer.start(); // Iniciar el timer para el segundo mensaje
+	}
+	
+	private void ataquePokemonEnemigo(Move move) {
+		String msg = enemy.getNick() + " ha usado " + move.getName();
+		txtArea_ctrl.setText(""); // Limpiar el texto existente en el JTextArea
+		escribirPocoAPoco(msg, 30); // Llamar al método para escribir poco a poco
+	
+		// Lógica para escribir el segundo mensaje después del primero
+		Timer timer = new Timer(30 * msg.length() + 500, null); // Ajusta el tiempo según el primer mensaje
+		timer.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String msg;
+				if (move.getPower() > 0) {
+					// Lógica del Ataque
+					Random random = new Random();
+					int resultado = random.nextInt(100); // Generar un número aleatorio del 0 al 99
+	
+					if (resultado < move.getAccuracy()) {
+						// El ataque tiene éxito
+	
+						// Bonus por Stab
+						double B = 1;
+						JSONArray types = enemy.getTypes();
+						for (int i = 0; i < types.length(); i++) {
+							JSONObject type = types.getJSONObject(i).getJSONObject("type");
+							String nameType = type.getString("name");
+	
+							if (nameType.equals(move.getName())) B = 1.5;
+	
+						}
+	
+						// Efectividad
+						double E = 1;
+						try {
+							E = efective(move.getType(), pokemon.getTypes());
+	
+						} catch (IOException e1) {
+							e1.printStackTrace();
+						}
+	
+						// Variable random
+						random = new Random();
+						resultado = random.nextInt(16) + 85; // Generar un número aleatorio del 85 al 100
+						int V = resultado;
+	
+						int N = enemy.getLevel();
+	
+						// Stat At
+						int A = enemy.getAtk();
+						if (move.getDamage().equals("special")) {
+							A = enemy.getSp_atk();
+						}
+	
+						// Poder
+						int P = move.getPower();
+	
+						// Stat Def
+						int D = pokemon.getDef();
+						if (move.getDamage().equals("special")) {
+							D = pokemon.getSp_def();
+						}
+	
+						double damage = 0.01 * B * E * V * ((((0.2 * N + 1) * A * P) / (25 * D)) + 2);
+	
+						updateBar(pokemon, damage);
+	
+						msg = "¡El ataque de " + enemy.getNick() + " fue exitoso!";
+	
+					} else {
+						// El ataque falla debido a la baja precisión
+						msg = "El ataque de " + enemy.getNick() + " ha fallado.";
+					}
+				} else {
+					msg = "El ataque de " + enemy.getNick() + " ha fallado.";
+				}
+				txtArea_ctrl.setText(""); // Limpiar el texto existente en el JTextArea
+				escribirPocoAPoco(msg, 30); // Escribir el segundo mensaje
+	
+				timer.stop(); // Detener el timer después de escribir el segundo mensaje
+	
+				// Habilitar los botones después del ataque del enemigo
+				btnLuchar.setEnabled(true);
+				btnPokemon.setEnabled(true);
+				btnHuir.setEnabled(true);
+			}
+		});
+		timer.start(); // Iniciar el timer para el segundo mensaje
+	}
+	
+	
 
 	public Color obtenerColorTipo(Move move) {
 
