@@ -222,6 +222,7 @@ public class BattleWindow {
 		btnHuir = new JButton("HUIR");
 		btnHuir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				recover();
 				frame.dispose();
 
 				parent.setLocationRelativeTo(parent);
@@ -713,6 +714,8 @@ public class BattleWindow {
 						txtArea_ctrl.setText(""); // Limpiar el texto existente en el JTextArea
 						escribirPocoAPoco(msg, 30); // Escribir el segundo mensaje
 						
+						recover();
+						
 						frame.dispose();
 
 						parent.setLocationRelativeTo(parent);
@@ -807,5 +810,13 @@ public class BattleWindow {
 
 		return color;
 	}
+	
+	public void recover() {
+		for (Pokemon pk : trainer.getTeam()) {
+			if (pk != null) pk.setCur_hp(pk.getMax_hp());
+		}
+		
+	}
+	
 
 }

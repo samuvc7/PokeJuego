@@ -247,8 +247,8 @@ public class MenuWindow {
 		btn_tienda.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//JFrame mapa = new JFrame(new TiendaPokemon());
-				new VentanaGachapon(trainer);
-				
+				new VentanaGachapon(frame, trainer);
+				frame.setEnabled(false);
 				//mapa.setLocationRelativeTo(frame);
 			}
 		});

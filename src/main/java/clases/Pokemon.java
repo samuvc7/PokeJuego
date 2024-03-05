@@ -45,6 +45,7 @@ public class Pokemon implements Serializable {
 	public Pokemon() {
 
 	}
+	
 	// Constructor que recibe id y nivel
 	public Pokemon(int id, int level) throws IOException {
 		this.id = id;

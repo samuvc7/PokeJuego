@@ -10,6 +10,8 @@ import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -54,10 +56,11 @@ public class VentanaGachapon extends JFrame {
 	private Trainer trainer;
 	private Pokemon pokemon;
 
-	public VentanaGachapon(Trainer trainer) {
+	public VentanaGachapon(JFrame parent, Trainer trainer) {
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 656, 432);
-
+		setResizable(false);
+		
 		this.trainer = trainer;
 		
 		panel_1 = new JPanel();
@@ -87,9 +90,9 @@ public class VentanaGachapon extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 
 				if (trainer.getMoney()>=100){
-					trainer.setMoney(trainer.getMoney() -100); 
-				
-				
+					trainer.setMoney(trainer.getMoney() - 100); 
+					
+					lbl_saldo.setText("" + trainer.getMoney());
 
 				// Crear un hilo para la generación del Pokémon
 				Thread hiloA = new MiHilo_GenerarPokemon("hilo1");
@@ -111,6 +114,7 @@ public class VentanaGachapon extends JFrame {
 					}
 				}
 				System.out.println("Todos los hilos han terminado");
+				
 				}else{
 					JOptionPane.showMessageDialog(panel_1, "No tienes saldo suficiente :C");
 				}
@@ -192,11 +196,18 @@ public class VentanaGachapon extends JFrame {
 		panel_1.add(lbl_imagenGacha);
 	
        
-       
+        // Agregar un WindowListener para escuchar el evento de cierre de la ventana
+		addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                // Habilitar el parent JFrame (MainFrame) cuando SecondFrame se cierra
+                parent.setEnabled(true);
+            }
+        });
 
 		
 		setContentPane(panel_1);
-		setLocationRelativeTo(null); // Centrar la ventana en la pantalla
+		setLocationRelativeTo(parent); // Centrar la ventana en la pantalla
 		setIconImage(new ImageIcon(getClass().getClassLoader().getResource("pokebola.png")).getImage());
 		setTitle("Gachapon");
 		setVisible(true);
@@ -260,7 +271,7 @@ public class VentanaGachapon extends JFrame {
 
 			while (sumastat >= 0 && !Thread.interrupted()) {
 				int randomNumber = random.nextInt(890);
-				int nivelRamdom = random.nextInt(10);
+				int nivelRamdom = random.nextInt(9) + 1;
 
 				System.out.println(nivelRamdom);
 				try {
@@ -382,8 +393,9 @@ public class VentanaGachapon extends JFrame {
 
 	private void addPokemonToSlot(int slotIndex) {
 		if (pokemon != null) {
-			trainer.getTeam()[slotIndex] = pokemon;
-		
+			//trainer.getTeam()[slotIndex] = pokemon;
+			trainer.addPokemon(pokemon, slotIndex);
+			btn_addToTeam.setEnabled(false);
 			System.out.println("Pokemon added to slot " + (slotIndex + 1));
 		}
 	}
