@@ -707,6 +707,8 @@ public class BattleWindow {
 				        trainer.setMoney(trainer.getMoney() + numeroAleatorio);
 				        pokemon.levelUp();
 						
+						JOptionPane.showMessageDialog(frame, "Felicidades has ganado !! ");
+
 						String msg = enemy.getNick() + " se ha debilitado, recibes " + numeroAleatorio + "monedas. ¡" + pokemon.getName() + " ha subido de nivel!";
 						txtArea_ctrl.setText(""); // Limpiar el texto existente en el JTextArea
 						escribirPocoAPoco(msg, 30); // Escribir el segundo mensaje

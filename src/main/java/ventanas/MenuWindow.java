@@ -20,6 +20,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
 import javax.swing.border.EmptyBorder;
 
 import clases.Pokemon;
@@ -37,7 +38,8 @@ public class MenuWindow {
 		frame.setResizable(false);
 		
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(300, 450);
+		//frame.setSize(300, 450);
+		frame.setSize(375, 450);
 		
 		JPanel contentPane = new JPanel();
 		contentPane.setBackground(new Color(255, 255, 255));
@@ -220,6 +222,94 @@ public class MenuWindow {
 		lbl_trainerName.setBounds(84, 64, 120, 13);
 		panel.add(lbl_trainerName);
 		
+		
+
+		// parte de silvia 
+
+		JSeparator separator = new JSeparator();
+		separator.setOrientation(SwingConstants.VERTICAL);
+		separator.setBounds(284, -4, 2, 415);
+		contentPane.add(separator);
+		
+		JLabel lbl_label_Saldo = new JLabel("Saldo");
+		lbl_label_Saldo.setHorizontalAlignment(SwingConstants.CENTER);
+		lbl_label_Saldo.setBounds(284, 10, 66, 15);
+		lbl_label_Saldo.setFont(new Font("Consolas", Font.BOLD, 12));
+		contentPane.add(lbl_label_Saldo);
+		
+		JLabel lbl_saldo = new JLabel("" + trainer.getMoney());
+		lbl_saldo.setHorizontalAlignment(SwingConstants.CENTER);
+		lbl_saldo.setBounds(286, 25, 64, 32);
+		lbl_saldo.setFont(new Font("Consolas", Font.BOLD, 12));
+		contentPane.add(lbl_saldo);
+		
+		JButton btn_tienda = new JButton();
+		btn_tienda.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				//JFrame mapa = new JFrame(new TiendaPokemon());
+				new VentanaGachapon(trainer);
+				
+				//mapa.setLocationRelativeTo(frame);
+			}
+		});
+		btn_tienda.setBackground(Color.WHITE);
+		btn_tienda.setBounds(296, 80, 51, 54);
+		btn_tienda.setFocusable(false);
+		btn_tienda.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btn_tienda.setBorder(null);
+		btn_tienda.setFont(new Font("Consolas", Font.PLAIN, 10));
+		btn_tienda.setFocusPainted(false);
+		btn_tienda.setBorderPainted(false);
+		btn_tienda.setForeground(Color.WHITE);
+		ImageIcon iconTienda = new ImageIcon(getClass().getClassLoader().getResource("tienda.png"));
+		btn_tienda.setIcon(new ImageIcon(iconTienda.getImage()
+				.getScaledInstance(34, 34, Image.SCALE_SMOOTH)));
+		contentPane.add(btn_tienda);
+		
+		// BOTON DE MAPA QUE GENERA UN JFRAME QUE POR EL MOMENTO SOLO CONTIENE UNA IMAGEN 
+		JButton btn_mapa = new JButton();
+		btn_mapa.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				JFrame mapa = new JFrame();
+				mapa.setLocationRelativeTo(frame);
+				mapa.setSize(500, 500);
+				mapa.setVisible(true);
+				mapa.setTitle("Mapa");
+				
+				
+				// CAMBIAR POR EL MAPA DE SAMU 
+				//ImageIcon iconMapa= new ImageIcon(getClass().getClassLoader().getResource("mapa.png"));
+
+				ImageIcon iconMapa= new ImageIcon(getClass().getClassLoader().getResource("mapaSamuel.jpg"));
+				JLabel lblBackground = new JLabel();
+				//ImageIcon imageIcon = new ImageIcon("images/200px-Sinnoh_mapa_juegos.png");
+			
+				lblBackground = new JLabel(new ImageIcon(iconMapa.getImage()
+					.getScaledInstance(480, 320, Image.SCALE_SMOOTH)));
+				
+				//JLabel lblBackground = new JLabel(new ImageIcon(iconMapa.getImage()
+				//	.getScaledInstance(34, 34, Image.SCALE_SMOOTH)));
+				lblBackground.setBounds(0, 0, 480, 320);
+				mapa.getContentPane().add(lblBackground);
+				mapa.setIconImage(new ImageIcon(getClass().getClassLoader().getResource("pokebola.png")).getImage());
+				
+			}
+		});
+		btn_mapa.setBackground(Color.WHITE);
+		btn_mapa.setBounds(296, 126, 51, 54);
+		btn_mapa.setFocusable(false);
+		btn_mapa.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btn_mapa.setBorder(null);
+		btn_mapa.setFont(new Font("Consolas", Font.PLAIN, 10));
+		// añadir imagenes desde la raiz reescalables (getScaledInstance())
+		ImageIcon iconMap = new ImageIcon(getClass().getClassLoader().getResource("mapa.png"));
+		btn_mapa.setIcon(new ImageIcon(iconMap.getImage()
+				.getScaledInstance(34, 34, Image.SCALE_SMOOTH)));
+
+		contentPane.add(btn_mapa);
+
+		// mostrar la frame 
 		frame.setLocationRelativeTo(null); // Centrar la ventana en la pantalla
 		frame.setIconImage(new ImageIcon(getClass().getClassLoader().getResource("pokebola.png")).getImage());
 		frame.setTitle("Menú");
