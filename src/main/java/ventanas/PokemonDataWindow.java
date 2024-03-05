@@ -64,16 +64,16 @@ public class PokemonDataWindow {
 	public PokemonDataWindow(JFrame parent, Trainer trainer, Pokemon pokemon) throws IOException {
 
 		front = true;
-		
+
 		frmDatos = new JFrame();
 		frmDatos.setResizable(false);
 		frmDatos.setTitle("Datos de " + pokemon.getNick());
 		frmDatos.getContentPane().setBackground(new Color(135, 206, 235));
 		frmDatos.getContentPane().setLayout(null);
-		
+
 		// ====================== Exportar Pokémon ========================
-		ImageIcon image_lista = new ImageIcon(
-				new ImageIcon("images/lista.png").getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH));
+		ImageIcon image_lista = new ImageIcon(new ImageIcon(getClass().getClassLoader().getResource("lista.png"))
+				.getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH));
 		JButton btn_export = new JButton(image_lista);
 		btn_export.setToolTipText("Exportar datos del Pokémon");
 		btn_export.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -85,56 +85,58 @@ public class PokemonDataWindow {
 			public void actionPerformed(ActionEvent e) {
 				String pkdat = "";
 				String genero = "";
-				if (pokemon.getGender().equals("Male")) genero = "M";
-				if (pokemon.getGender().equals("Female")) genero = "F";
+				if (pokemon.getGender().equals("Male"))
+					genero = "M";
+				if (pokemon.getGender().equals("Female"))
+					genero = "F";
 				pkdat += pokemon.getNick() + " (" + pokemon.getName() + ") " + "(" + genero + ")";
 				pkdat += "\nLevel: " + pokemon.getLevel();
-				
+
 				for (Move move : pokemon.getMoves()) {
 					if (move != null) {
-						String movename = move.getRaw_name().substring(0,1).toUpperCase() + move.getRaw_name().substring(1).toLowerCase();
+						String movename = move.getRaw_name().substring(0, 1).toUpperCase()
+								+ move.getRaw_name().substring(1).toLowerCase();
 						pkdat += "\n- " + movename;
 					}
 				}
-				
+
 				// Crear una selección de cadena
-		        StringSelection seleccion = new StringSelection(pkdat);
+				StringSelection seleccion = new StringSelection(pkdat);
 
-		        // Obtener el sistema de portapapeles
-		        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+				// Obtener el sistema de portapapeles
+				Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 
-		        // Colocar la selección en el portapapeles
-		        clipboard.setContents(seleccion, null);
-		        
-		        // Mostrar mensaje al usuario
-		        JOptionPane.showMessageDialog(frmDatos, "Los datos del Pokémon se han copiado al portapapeles", "Copiado al portapapeles", JOptionPane.INFORMATION_MESSAGE);
-		        
+				// Colocar la selección en el portapapeles
+				clipboard.setContents(seleccion, null);
+
+				// Mostrar mensaje al usuario
+				JOptionPane.showMessageDialog(frmDatos, "Los datos del Pokémon se han copiado al portapapeles",
+						"Copiado al portapapeles", JOptionPane.INFORMATION_MESSAGE);
+
 			}
 		});
 		frmDatos.getContentPane().add(btn_export);
 
-		
 		// ====================== Cambiar el mote del Pokémon ======================
-		ImageIcon image_lapiz = new ImageIcon(
-				new ImageIcon("images/lapiz.png").getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH));
+		ImageIcon image_lapiz = new ImageIcon(new ImageIcon(getClass().getClassLoader().getResource("lapiz.png"))
+				.getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH));
 		JButton btn_changeNick = new JButton(image_lapiz);
 		btn_changeNick.setToolTipText("Cambiar mote del Pokémon");
 		btn_changeNick.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-                // Abre el diálogo para cambiar el mote del Pokémon
-                ChangeNickDialog dialog = new ChangeNickDialog(frmDatos, pokemon);
-                dialog.setVisible(true);
-                
+				// Abre el diálogo para cambiar el mote del Pokémon
+				ChangeNickDialog dialog = new ChangeNickDialog(frmDatos, pokemon);
+				dialog.setVisible(true);
+
 				try {
-					new PokemonDataWindow(parent, trainer, pokemon);
+					new PokemonDataWindow(parent, trainer, pokemon).frmDatos.setLocationRelativeTo(frmDatos);
 					frmDatos.dispose();
-					
+
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 
-                
 			}
 		});
 		btn_changeNick.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -143,18 +145,18 @@ public class PokemonDataWindow {
 		btn_changeNick.setBorderPainted(false); // Elimina el borde
 		btn_changeNick.setContentAreaFilled(false); // Elimina el relleno del área de contenido
 		btn_changeNick.setFocusPainted(false);
-		
+
 		// ====================== Cargar el gif del Pokémon ======================
 		ImageIcon imageIcon = new ImageIcon(new URL(pokemon.getSpriteFrontUrl()));
 		JLabel lbl_sprite = new JLabel(imageIcon);
 		lbl_sprite.setBackground(new Color(255, 255, 255));
 		lbl_sprite.setBounds(322, 45, 250, 250);
 		frmDatos.getContentPane().add(lbl_sprite);
-		
+
 		// ===================== Botón para girar el sprite =====================
 		JButton btn_rotateSprite = new JButton();
-		ImageIcon image_rotate = new ImageIcon(
-				new ImageIcon("images/deshacer.png").getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH));
+		ImageIcon image_rotate = new ImageIcon(new ImageIcon(getClass().getClassLoader().getResource("deshacer.png"))
+				.getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH));
 		btn_rotateSprite.setIcon(image_rotate);
 		btn_rotateSprite.setToolTipText("Girar el gráfico del Pokémon");
 		btn_rotateSprite.addActionListener(new ActionListener() {
@@ -172,13 +174,11 @@ public class PokemonDataWindow {
 
 					}
 
-
 				} catch (MalformedURLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 
-				
 			}
 		});
 		btn_rotateSprite.setBounds(294, 210, 32, 32);
@@ -188,7 +188,8 @@ public class PokemonDataWindow {
 		btn_rotateSprite.setFocusPainted(false);
 		frmDatos.getContentPane().add(btn_rotateSprite);
 
-		// ====================== Cabecera con información básica del Pokémon ======================
+		// ====================== Cabecera con información básica del Pokémon
+		// ======================
 		JPanel panel_header = new JPanel();
 		panel_header.setBackground(new Color(0, 0, 0, 128));
 		panel_header.setBounds(332, 20, 230, 26);
@@ -206,9 +207,9 @@ public class PokemonDataWindow {
 		if (!pokemon.getGender().equals("Unknown")) {
 			ImageIcon imageGender;
 			if (pokemon.getGender().equals("Female")) {
-				imageGender = new ImageIcon("images/gender_Female.png");
+				imageGender = new ImageIcon(getClass().getClassLoader().getResource("gender_female.png"));
 			} else {
-				imageGender = new ImageIcon("images/gender_Male.png");
+				imageGender = new ImageIcon(getClass().getClassLoader().getResource("gender_male.png"));
 			}
 			JLabel lbl_gender = new JLabel(imageGender);
 			lbl_gender.setBounds(110, 3, 20, 20);
@@ -245,7 +246,8 @@ public class PokemonDataWindow {
 			frmDatos.getContentPane().add(lbl_typeData2);
 		}
 
-		// ====================== Panel con información de la especie ======================
+		// ====================== Panel con información de la especie
+		// ======================
 		JPanel panel_species = new JPanel();
 		// panel.setBackground(new Color(32, 178, 170));
 		panel_species.setBackground(new Color(0, 0, 0, 128));
@@ -299,14 +301,14 @@ public class PokemonDataWindow {
 		lbl_fechaCaptura.setFont(new Font("Consolas", Font.BOLD, 10));
 		lbl_fechaCaptura.setBounds(5, 5, 150, 20);
 		panel_data.add(lbl_fechaCaptura);
-		
+
 		JLabel lbl_eo = new JLabel("EO " + pokemon.getEo());
 		lbl_eo.setToolTipText("Nombre del entrenador original");
 		lbl_eo.setForeground(Color.WHITE);
 		lbl_eo.setFont(new Font("Consolas", Font.BOLD, 10));
 		lbl_eo.setBounds(5, 30, 150, 20);
 		panel_data.add(lbl_eo);
-		
+
 		// Info Ataques
 		JLabel lbl_moveName = new JLabel("");
 		lbl_moveName.setForeground(Color.WHITE);
@@ -323,7 +325,7 @@ public class PokemonDataWindow {
 		lbl_moveType.setBounds(130, 4, 100, 22);
 		panel_data.add(lbl_moveType);
 		lbl_moveType.setVisible(false);
-		
+
 		JLabel lbl_damage = new JLabel();
 		lbl_damage.setHorizontalAlignment(SwingConstants.RIGHT);
 		lbl_damage.setForeground(Color.WHITE);
@@ -332,33 +334,33 @@ public class PokemonDataWindow {
 		lbl_damage.setBounds(235, 5, 35, 20);
 		panel_data.add(lbl_damage);
 		lbl_damage.setVisible(false);
-		
+
 		JLabel lbl_movePower = new JLabel("");
 		lbl_movePower.setForeground(Color.WHITE);
 		lbl_movePower.setFont(new Font("Consolas", Font.PLAIN, 10));
 		lbl_movePower.setBounds(280, 5, 80, 20);
 		panel_data.add(lbl_movePower);
 		lbl_movePower.setVisible(false);
-		
+
 		JLabel lbl_moveAccuracy = new JLabel("");
 		lbl_moveAccuracy.setForeground(Color.WHITE);
 		lbl_moveAccuracy.setFont(new Font("Consolas", Font.PLAIN, 10));
 		lbl_moveAccuracy.setBounds(360, 5, 80, 20);
 		panel_data.add(lbl_moveAccuracy);
 		lbl_moveAccuracy.setVisible(false);
-		
+
 		JLabel lbl_moveDesc = new JLabel("");
 		lbl_moveDesc.setForeground(Color.WHITE);
 		lbl_moveDesc.setFont(new Font("Consolas", Font.PLAIN, 10));
 		lbl_moveDesc.setBounds(5, 30, 467, 20);
 		panel_data.add(lbl_moveDesc);
 		lbl_moveDesc.setVisible(false);
-		
+
 		// ===================== Botón para mostrar la info =====================
 		JButton btn_showInfo = new JButton();
 		btn_showInfo.setToolTipText("Mostrar más información");
-		ImageIcon image_agregar = new ImageIcon(
-				new ImageIcon("images/agregar.png").getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH));
+		ImageIcon image_agregar = new ImageIcon(new ImageIcon(getClass().getClassLoader().getResource("agregar.png"))
+				.getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH));
 		btn_showInfo.setIcon(image_agregar);
 		btn_showInfo.setBorderPainted(false); // Elimina el borde
 		btn_showInfo.setContentAreaFilled(false); // Elimina el relleno del área de contenido
@@ -372,14 +374,13 @@ public class PokemonDataWindow {
 				lbl_movePower.setVisible(false);
 				lbl_moveAccuracy.setVisible(false);
 				lbl_moveDesc.setVisible(false);
-				
+
 				lbl_fechaCaptura.setVisible(true);
 				lbl_eo.setVisible(true);
 
 				panel_data.setVisible(false);
 				panel_data.setVisible(true);
 
-				
 			}
 		});
 		btn_showInfo.setBounds(294, 250, 32, 32);
@@ -529,27 +530,28 @@ public class PokemonDataWindow {
 			public void actionPerformed(ActionEvent e) {
 				lbl_fechaCaptura.setVisible(false);
 				lbl_eo.setVisible(false);
-				
+
 				lbl_moveName.setText(pokemon.getMoves()[0].getName());
 				lbl_moveName.setVisible(true);
 
 				lbl_moveDesc.setText(pokemon.getMoves()[0].getDesc());
 				lbl_moveDesc.setVisible(true);
 				lbl_moveDesc.setToolTipText("<html> " + pokemon.getMoves()[0].getDesc());
-				
+
 				try {
 					ImageIcon img_type = obtenerImagenTipo(pokemon.getMoves()[0].getType());
-					lbl_moveType.setIcon(new ImageIcon(img_type.getImage().getScaledInstance(100, 22, Image.SCALE_SMOOTH)));
+					lbl_moveType
+							.setIcon(new ImageIcon(img_type.getImage().getScaledInstance(100, 22, Image.SCALE_SMOOTH)));
 					lbl_moveType.setVisible(true);
-					
+
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
-				
+
 				ImageIcon img_type = obtenerImagenCategoria(pokemon.getMoves()[0].getDamage());
 				lbl_damage.setIcon(img_type);
 				lbl_damage.setVisible(true);
-				
+
 				lbl_movePower.setText("Potencia " + pokemon.getMoves()[0].getPower());
 				lbl_movePower.setVisible(true);
 
@@ -580,19 +582,20 @@ public class PokemonDataWindow {
 				public void actionPerformed(ActionEvent e) {
 					lbl_fechaCaptura.setVisible(false);
 					lbl_eo.setVisible(false);
-					
+
 					lbl_moveName.setText(pokemon.getMoves()[1].getName());
 					lbl_moveName.setVisible(true);
 
 					lbl_moveDesc.setText(pokemon.getMoves()[1].getDesc());
 					lbl_moveDesc.setVisible(true);
 					lbl_moveDesc.setToolTipText("<html> " + pokemon.getMoves()[1].getDesc());
-					
+
 					try {
 						ImageIcon img_type = obtenerImagenTipo(pokemon.getMoves()[1].getType());
-						lbl_moveType.setIcon(new ImageIcon(img_type.getImage().getScaledInstance(100, 22, Image.SCALE_SMOOTH)));
+						lbl_moveType.setIcon(
+								new ImageIcon(img_type.getImage().getScaledInstance(100, 22, Image.SCALE_SMOOTH)));
 						lbl_moveType.setVisible(true);
-						
+
 					} catch (IOException e1) {
 						e1.printStackTrace();
 					}
@@ -600,13 +603,13 @@ public class PokemonDataWindow {
 					ImageIcon img_type = obtenerImagenCategoria(pokemon.getMoves()[1].getDamage());
 					lbl_damage.setIcon(img_type);
 					lbl_damage.setVisible(true);
-					
+
 					lbl_movePower.setText("Potencia " + pokemon.getMoves()[1].getPower());
 					lbl_movePower.setVisible(true);
-					
+
 					lbl_moveAccuracy.setText("Precisión " + pokemon.getMoves()[1].getAccuracy());
 					lbl_moveAccuracy.setVisible(true);
-					
+
 					panel_data.setVisible(false);
 					panel_data.setVisible(true);
 
@@ -640,26 +643,27 @@ public class PokemonDataWindow {
 					lbl_moveDesc.setText(pokemon.getMoves()[2].getDesc());
 					lbl_moveDesc.setVisible(true);
 					lbl_moveDesc.setToolTipText("<html> " + pokemon.getMoves()[2].getDesc());
-					
+
 					try {
 						ImageIcon img_type = obtenerImagenTipo(pokemon.getMoves()[2].getType());
-						lbl_moveType.setIcon(new ImageIcon(img_type.getImage().getScaledInstance(100, 22, Image.SCALE_SMOOTH)));
+						lbl_moveType.setIcon(
+								new ImageIcon(img_type.getImage().getScaledInstance(100, 22, Image.SCALE_SMOOTH)));
 						lbl_moveType.setVisible(true);
-						
+
 					} catch (IOException e1) {
 						e1.printStackTrace();
 					}
-					
+
 					ImageIcon img_type = obtenerImagenCategoria(pokemon.getMoves()[2].getDamage());
 					lbl_damage.setIcon(img_type);
 					lbl_damage.setVisible(true);
 
 					lbl_movePower.setText("Potencia " + pokemon.getMoves()[2].getPower());
 					lbl_movePower.setVisible(true);
-					
+
 					lbl_moveAccuracy.setText("Precisión " + pokemon.getMoves()[2].getAccuracy());
 					lbl_moveAccuracy.setVisible(true);
-					
+
 					panel_data.setVisible(false);
 					panel_data.setVisible(true);
 
@@ -693,26 +697,27 @@ public class PokemonDataWindow {
 					lbl_moveDesc.setText(pokemon.getMoves()[3].getDesc());
 					lbl_moveDesc.setVisible(true);
 					lbl_moveDesc.setToolTipText("<html> " + pokemon.getMoves()[3].getDesc());
-					
+
 					try {
 						ImageIcon img_type = obtenerImagenTipo(pokemon.getMoves()[3].getType());
-						lbl_moveType.setIcon(new ImageIcon(img_type.getImage().getScaledInstance(100, 22, Image.SCALE_SMOOTH)));
+						lbl_moveType.setIcon(
+								new ImageIcon(img_type.getImage().getScaledInstance(100, 22, Image.SCALE_SMOOTH)));
 						lbl_moveType.setVisible(true);
-						
+
 					} catch (IOException e1) {
 						e1.printStackTrace();
 					}
-					
+
 					ImageIcon img_type = obtenerImagenCategoria(pokemon.getMoves()[3].getDamage());
 					lbl_damage.setIcon(img_type);
 					lbl_damage.setVisible(true);
 
 					lbl_movePower.setText("Potencia " + pokemon.getMoves()[3].getPower());
 					lbl_movePower.setVisible(true);
-					
+
 					lbl_moveAccuracy.setText("Precisión " + pokemon.getMoves()[3].getAccuracy());
 					lbl_moveAccuracy.setVisible(true);
-					
+
 					panel_data.setVisible(false);
 					panel_data.setVisible(true);
 
@@ -753,7 +758,7 @@ public class PokemonDataWindow {
 		});
 
 		// Fondo
-		ImageIcon image_background = new ImageIcon("images/databg.png");
+		ImageIcon image_background = new ImageIcon(getClass().getClassLoader().getResource("databg.png"));
 		JLabel lbl_bg = new JLabel(image_background);
 		lbl_bg.setBackground(new Color(255, 255, 255));
 		lbl_bg.setBounds(74, 0, 512, 384);
@@ -769,23 +774,23 @@ public class PokemonDataWindow {
 		if (trainer.getTeam()[0] != null) {
 			ImageIcon icon1 = new ImageIcon(new URL(trainer.getTeam()[0].getIconUrl()));
 			btn_pk1.setIcon(icon1);
-			
+
 			btn_pk1.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					try {
-						new PokemonDataWindow(parent, trainer, trainer.getTeam()[0]);
+						new PokemonDataWindow(parent, trainer, trainer.getTeam()[0]).frmDatos
+								.setLocationRelativeTo(frmDatos);
 						frmDatos.dispose();
 						parent.setEnabled(false);
-
 
 					} catch (IOException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-					
+
 				}
 			});
-			
+
 		}
 		btn_pk1.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btn_pk1.setFocusPainted(false);
@@ -796,23 +801,23 @@ public class PokemonDataWindow {
 		if (trainer.getTeam()[1] != null) {
 			ImageIcon icon1 = new ImageIcon(new URL(trainer.getTeam()[1].getIconUrl()));
 			btn_pk2.setIcon(icon1);
-			
+
 			btn_pk2.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					try {
-						new PokemonDataWindow(parent, trainer, trainer.getTeam()[1]);
+						new PokemonDataWindow(parent, trainer, trainer.getTeam()[1]).frmDatos
+								.setLocationRelativeTo(frmDatos);
 						frmDatos.dispose();
 						parent.setEnabled(false);
-
 
 					} catch (IOException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-					
+
 				}
 			});
-			
+
 		}
 		btn_pk2.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btn_pk2.setFocusPainted(false);
@@ -823,23 +828,23 @@ public class PokemonDataWindow {
 		if (trainer.getTeam()[2] != null) {
 			ImageIcon icon1 = new ImageIcon(new URL(trainer.getTeam()[2].getIconUrl()));
 			btn_pk3.setIcon(icon1);
-			
+
 			btn_pk3.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					try {
-						new PokemonDataWindow(parent, trainer, trainer.getTeam()[2]);
+						new PokemonDataWindow(parent, trainer, trainer.getTeam()[2]).frmDatos
+								.setLocationRelativeTo(frmDatos);
 						frmDatos.dispose();
 						parent.setEnabled(false);
-
 
 					} catch (IOException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-					
+
 				}
 			});
-			
+
 		}
 		btn_pk3.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btn_pk3.setFocusPainted(false);
@@ -850,23 +855,23 @@ public class PokemonDataWindow {
 		if (trainer.getTeam()[3] != null) {
 			ImageIcon icon1 = new ImageIcon(new URL(trainer.getTeam()[3].getIconUrl()));
 			btn_pk4.setIcon(icon1);
-			
+
 			btn_pk4.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					try {
-						new PokemonDataWindow(parent, trainer, trainer.getTeam()[3]);
+						new PokemonDataWindow(parent, trainer, trainer.getTeam()[3]).frmDatos
+								.setLocationRelativeTo(frmDatos);
 						frmDatos.dispose();
 						parent.setEnabled(false);
-
 
 					} catch (IOException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-					
+
 				}
 			});
-			
+
 		}
 		btn_pk4.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btn_pk4.setFocusPainted(false);
@@ -877,23 +882,23 @@ public class PokemonDataWindow {
 		if (trainer.getTeam()[4] != null) {
 			ImageIcon icon1 = new ImageIcon(new URL(trainer.getTeam()[4].getIconUrl()));
 			btn_pk5.setIcon(icon1);
-			
+
 			btn_pk5.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					try {
-						new PokemonDataWindow(parent, trainer, trainer.getTeam()[4]);
+						new PokemonDataWindow(parent, trainer, trainer.getTeam()[4]).frmDatos
+								.setLocationRelativeTo(frmDatos);
 						frmDatos.dispose();
 						parent.setEnabled(false);
-
 
 					} catch (IOException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-					
+
 				}
 			});
-			
+
 		}
 		btn_pk5.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btn_pk5.setFocusPainted(false);
@@ -904,42 +909,43 @@ public class PokemonDataWindow {
 		if (trainer.getTeam()[5] != null) {
 			ImageIcon icon1 = new ImageIcon(new URL(trainer.getTeam()[5].getIconUrl()));
 			btn_pk6.setIcon(icon1);
-			
+
 			btn_pk6.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					try {
-						new PokemonDataWindow(parent, trainer, trainer.getTeam()[5]);
+						new PokemonDataWindow(parent, trainer, trainer.getTeam()[5]).frmDatos
+								.setLocationRelativeTo(frmDatos);
 						frmDatos.dispose();
 						parent.setEnabled(false);
-						
+
 					} catch (IOException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-					
+
 				}
 			});
-			
+
 		}
 		btn_pk6.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btn_pk6.setFocusPainted(false);
 		frmDatos.getContentPane().add(btn_pk6);
 
-		frmDatos.setIconImage(Toolkit.getDefaultToolkit().getImage("images/pokebola.png"));
+		frmDatos.setIconImage(new ImageIcon(getClass().getClassLoader().getResource("pokebola.png")).getImage());
 		frmDatos.setSize(586, 421);
-		frmDatos.setLocationRelativeTo(null); // Centrar la ventana en la pantalla
+		frmDatos.setLocationRelativeTo(parent); // Centrar la ventana en la pantalla
 		frmDatos.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
 		frmDatos.setVisible(true);
-		
-        // Agregar un WindowListener para escuchar el evento de cierre de la ventana
-        frmDatos.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                // Habilitar el parent JFrame (MainFrame) cuando SecondFrame se cierra
-                parent.setEnabled(true);
-            }
-        });
+
+		// Agregar un WindowListener para escuchar el evento de cierre de la ventana
+		frmDatos.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				// Habilitar el parent JFrame (MainFrame) cuando SecondFrame se cierra
+				parent.setEnabled(true);
+			}
+		});
 
 	}
 
@@ -1018,58 +1024,58 @@ public class PokemonDataWindow {
 
 			switch (nameType) {
 			case "normal":
-				typesImages.add(new ImageIcon("images/normal.png"));
+				typesImages.add(new ImageIcon(getClass().getClassLoader().getResource("normal.png")));
 				break;
 			case "fire":
-				typesImages.add(new ImageIcon("images/fuego.png"));
+				typesImages.add(new ImageIcon(getClass().getClassLoader().getResource("fuego.png")));
 				break;
 			case "flying":
-				typesImages.add(new ImageIcon("images/volador.png"));
+				typesImages.add(new ImageIcon(getClass().getClassLoader().getResource("volador.png")));
 				break;
 			case "bug":
-				typesImages.add(new ImageIcon("images/bicho.png"));
+				typesImages.add(new ImageIcon(getClass().getClassLoader().getResource("bicho.png")));
 				break;
 			case "electric":
-				typesImages.add(new ImageIcon("images/electrico.png"));
+				typesImages.add(new ImageIcon(getClass().getClassLoader().getResource("electrico.png")));
 				break;
 			case "fighting":
-				typesImages.add(new ImageIcon("images/lucha.png"));
+				typesImages.add(new ImageIcon(getClass().getClassLoader().getResource("lucha.png")));
 				break;
 			case "ghost":
-				typesImages.add(new ImageIcon("images/fantasma.png"));
+				typesImages.add(new ImageIcon(getClass().getClassLoader().getResource("fantasma.png")));
 				break;
 			case "psychic":
-				typesImages.add(new ImageIcon("images/psiquico.png"));
+				typesImages.add(new ImageIcon(getClass().getClassLoader().getResource("psiquico.png")));
 				break;
 			case "steel":
-				typesImages.add(new ImageIcon("images/acero.png"));
+				typesImages.add(new ImageIcon(getClass().getClassLoader().getResource("acero.png")));
 				break;
 			case "ice":
-				typesImages.add(new ImageIcon("images/hielo.png"));
+				typesImages.add(new ImageIcon(getClass().getClassLoader().getResource("hielo.png")));
 				break;
 			case "poison":
-				typesImages.add(new ImageIcon("images/veneno.png"));
+				typesImages.add(new ImageIcon(getClass().getClassLoader().getResource("veneno.png")));
 				break;
 			case "dragon":
-				typesImages.add(new ImageIcon("images/dragon.png"));
+				typesImages.add(new ImageIcon(getClass().getClassLoader().getResource("dragon.png")));
 				break;
 			case "ground":
-				typesImages.add(new ImageIcon("images/tierra.png"));
+				typesImages.add(new ImageIcon(getClass().getClassLoader().getResource("tierra.png")));
 				break;
 			case "water":
-				typesImages.add(new ImageIcon("images/agua.png"));
+				typesImages.add(new ImageIcon(getClass().getClassLoader().getResource("agua.png")));
 				break;
 			case "dark":
-				typesImages.add(new ImageIcon("images/siniestro.png"));
+				typesImages.add(new ImageIcon(getClass().getClassLoader().getResource("siniestro.png")));
 				break;
 			case "rock":
-				typesImages.add(new ImageIcon("images/roca.png"));
+				typesImages.add(new ImageIcon(getClass().getClassLoader().getResource("roca.png")));
 				break;
 			case "grass":
-				typesImages.add(new ImageIcon("images/planta.png"));
+				typesImages.add(new ImageIcon(getClass().getClassLoader().getResource("planta.png")));
 				break;
 			case "fairy":
-				typesImages.add(new ImageIcon("images/hada.png"));
+				typesImages.add(new ImageIcon(getClass().getClassLoader().getResource("hada.png")));
 				break;
 			}
 		}
@@ -1082,79 +1088,79 @@ public class PokemonDataWindow {
 
 		switch (type) {
 		case "normal":
-			img = new ImageIcon("images/normal.png");
+			img = new ImageIcon(getClass().getClassLoader().getResource("normal.png"));
 			break;
 		case "fire":
-			img = new ImageIcon("images/fuego.png");
+			img = new ImageIcon(getClass().getClassLoader().getResource("fuego.png"));
 			break;
 		case "flying":
-			img = new ImageIcon("images/volador.png");
+			img = new ImageIcon(getClass().getClassLoader().getResource("volador.png"));
 			break;
 		case "bug":
-			img = new ImageIcon("images/bicho.png");
+			img = new ImageIcon(getClass().getClassLoader().getResource("bicho.png"));
 			break;
 		case "electric":
-			img = new ImageIcon("images/electrico.png");
+			img = new ImageIcon(getClass().getClassLoader().getResource("electrico.png"));
 			break;
 		case "fighting":
-			img = new ImageIcon("images/lucha.png");
+			img = new ImageIcon(getClass().getClassLoader().getResource("lucha.png"));
 			break;
 		case "ghost":
-			img = new ImageIcon("images/fantasma.png");
+			img = new ImageIcon(getClass().getClassLoader().getResource("fantasma.png"));
 			break;
 		case "psychic":
-			img = new ImageIcon("images/psiquico.png");
+			img = new ImageIcon(getClass().getClassLoader().getResource("psiquico.png"));
 			break;
 		case "steel":
-			img = new ImageIcon("images/acero.png");
+			img = new ImageIcon(getClass().getClassLoader().getResource("acero.png"));
 			break;
 		case "ice":
-			img = new ImageIcon("images/hielo.png");
+			img = new ImageIcon(getClass().getClassLoader().getResource("hielo.png"));
 			break;
 		case "poison":
-			img = new ImageIcon("images/veneno.png");
+			img = new ImageIcon(getClass().getClassLoader().getResource("veneno.png"));
 			break;
 		case "dragon":
-			img = new ImageIcon("images/dragon.png");
+			img = new ImageIcon(getClass().getClassLoader().getResource("dragon.png"));
 			break;
 		case "ground":
-			img = new ImageIcon("images/tierra.png");
+			img = new ImageIcon(getClass().getClassLoader().getResource("tierra.png"));
 			break;
 		case "water":
-			img = new ImageIcon("images/agua.png");
+			img = new ImageIcon(getClass().getClassLoader().getResource("agua.png"));
 			break;
 		case "dark":
-			img = new ImageIcon("images/siniestro.png");
+			img = new ImageIcon(getClass().getClassLoader().getResource("siniestro.png"));
 			break;
 		case "rock":
-			img = new ImageIcon("images/roca.png");
+			img = new ImageIcon(getClass().getClassLoader().getResource("roca.png"));
 			break;
 		case "grass":
-			img = new ImageIcon("images/planta.png");
+			img = new ImageIcon(getClass().getClassLoader().getResource("planta.png"));
 			break;
 		case "fairy":
-			img = new ImageIcon("images/hada.png");
+			img = new ImageIcon(getClass().getClassLoader().getResource("hada.png"));
 			break;
 		}
 
 		return img;
 	}
-	
-	public ImageIcon obtenerImagenCategoria (String category) {
+
+	public ImageIcon obtenerImagenCategoria(String category) {
 		ImageIcon img = new ImageIcon();
 
 		switch (category) {
-		case "status" :
-			img = new ImageIcon("images/estado.png");
+		case "status":
+			img = new ImageIcon(getClass().getClassLoader().getResource("estado.png"));
 			break;
-		case "special" :
-			img = new ImageIcon("images/especial.png");
+		case "special":
+			img = new ImageIcon(getClass().getClassLoader().getResource("especial.png"));
 			break;
-		case "physical" :
-			img = new ImageIcon("images/fisico.png");
+		case "physical":
+			img = new ImageIcon(getClass().getClassLoader().getResource("fisico.png"));
 			break;
 		}
-		
+
 		return img;
 	}
 }
@@ -1162,18 +1168,18 @@ public class PokemonDataWindow {
 class ChangeNickDialog extends JDialog {
 
 	public ChangeNickDialog(JFrame parent, Pokemon pokemon) {
-        super(parent, "Cambiar mote del Pokémon", true); // El true indica que el diálogo es modal
-        setSize(300, 150);
-		//setResizable(false);
-        setLocationRelativeTo(parent);
-        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		super(parent, "Cambiar mote del Pokémon", true); // El true indica que el diálogo es modal
+		setSize(300, 150);
+		// setResizable(false);
+		setLocationRelativeTo(parent);
+		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
-        JLabel label = new JLabel("Nuevo mote del Pokémon:");
-        label.setFont(new Font("Consolas", Font.BOLD, 14));
-		
-        JTextField textField = new JTextField(15);
-        textField.setFont(new Font("Consolas", Font.PLAIN, 10));
-        textField.setDocument(new PlainDocument() {
+		JLabel label = new JLabel("Nuevo mote del Pokémon:");
+		label.setFont(new Font("Consolas", Font.BOLD, 14));
+
+		JTextField textField = new JTextField(15);
+		textField.setFont(new Font("Consolas", Font.PLAIN, 10));
+		textField.setDocument(new PlainDocument() {
 			@Override
 			public void insertString(int offs, String str, AttributeSet a) throws BadLocationException {
 				if (getLength() + str.length() <= 12) { // Cambia 15 al valor máximo deseado
@@ -1181,30 +1187,30 @@ class ChangeNickDialog extends JDialog {
 				}
 			}
 		});
-        JButton btn_accept = new JButton("Aceptar");
-        btn_accept.setFont(new Font("Consolas", Font.PLAIN, 10));
+		JButton btn_accept = new JButton("Aceptar");
+		btn_accept.setFont(new Font("Consolas", Font.PLAIN, 10));
 
-        btn_accept.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                // Aquí puedes obtener el nuevo mote del Pokémon del JTextField
-                String newNick = textField.getText();
-                
-    			if (!newNick.trim().isEmpty()) {
-                    pokemon.setNick(newNick);
+		btn_accept.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// Aquí puedes obtener el nuevo mote del Pokémon del JTextField
+				String newNick = textField.getText();
 
-    			}
-    			
-                dispose();
+				if (!newNick.trim().isEmpty()) {
+					pokemon.setNick(newNick);
 
-            }
-        });
+				}
 
-        JPanel panel = new JPanel();
-        panel.add(label);
-        panel.add(textField);
-        panel.add(btn_accept);
+				dispose();
 
-        getContentPane().add(panel);
-    }
-	
+			}
+		});
+
+		JPanel panel = new JPanel();
+		panel.add(label);
+		panel.add(textField);
+		panel.add(btn_accept);
+
+		getContentPane().add(panel);
+	}
+
 }

@@ -13,15 +13,19 @@ import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Font;
 
 import javax.swing.border.LineBorder;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.awt.event.ActionEvent;
 
 import java.awt.GridLayout;
@@ -34,20 +38,24 @@ import java.awt.SystemColor;
 
 public class PantallaCargarPartidas {
 
-	private JFrame frame;
+	private JFrame frmCargarPartida;
 	private JButton btn_atras;
 	private JButton btn_continuar;
 
 
-	public PantallaCargarPartidas(Trainer trainer) {
+	public PantallaCargarPartidas(JFrame parent, Trainer trainer) {
 
-		frame = new JFrame();
-		frame.getContentPane().setFont(new Font("Consolas", Font.PLAIN, 11));
-		frame.setBounds(100, 100, 598, 431);
-		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		frame.getContentPane().setLayout(null);
+		frmCargarPartida = new JFrame();
+		frmCargarPartida.setTitle("Cargar Partida");
+		frmCargarPartida.getContentPane().setFont(new Font("Consolas", Font.PLAIN, 11));
+		frmCargarPartida.setBounds(100, 100, 598, 431);
+		frmCargarPartida.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		frmCargarPartida.setLocationRelativeTo(null); // Centrar la ventana en la pantalla
+		frmCargarPartida.getContentPane().setLayout(null);
+		frmCargarPartida.setIconImage(new ImageIcon(getClass().getClassLoader().getResource("pokebola.png")).getImage());
 
-		ImageIcon imageIcon = new ImageIcon("images/fondoPokochi.jpg");
+
+		ImageIcon imageIcon = new ImageIcon(getClass().getClassLoader().getResource("fondoPokochi.jpg"));
 		Image image = imageIcon.getImage();
 		Image scaledImage = image.getScaledInstance(imageIcon.getIconWidth(), imageIcon.getIconHeight(),
 				Image.SCALE_DEFAULT);
@@ -55,22 +63,25 @@ public class PantallaCargarPartidas {
 
 
 	
-		ImageIcon trainerSprite = new ImageIcon(Toolkit.getDefaultToolkit().getImage("images/Entrenador1.png"));
+		ImageIcon trainerSprite = new ImageIcon(getClass().getClassLoader().getResource("Entrenador1.png"));
 		if (trainer.getStyle() == 2) {
-			trainerSprite = new ImageIcon(Toolkit.getDefaultToolkit().getImage("images/Entrenador2.png"));
+			trainerSprite = new ImageIcon(getClass().getClassLoader().getResource("Entrenador2.png"));
 		}
 
 		btn_continuar = new JButton("Continuar");
 		btn_continuar.setBackground(new Color(65, 105, 225));
 		btn_continuar.setFont(new Font("Consolas", Font.BOLD, 11));
+		btn_continuar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btn_continuar.setFocusPainted(false);
 		btn_continuar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
 				try (ObjectInputStream entrada = new ObjectInputStream(new FileInputStream("save.dat"))) {
 					Trainer trainer = (Trainer) entrada.readObject();
-					Pokemon pokemon = trainer.getTeam()[0];
-
-					new MenuWindow(pokemon, trainer);
+					new MenuWindow(trainer);
+					parent.dispose();
+					frmCargarPartida.dispose();
+					
 				} catch (FileNotFoundException e3) {
 					// No hay datos guardados, elegir inicial
 					// new StarterSelectionWindow();
@@ -87,15 +98,17 @@ public class PantallaCargarPartidas {
 		});
 
 		btn_continuar.setBounds(314, 324, 180, 45);
-		frame.getContentPane().add(btn_continuar);
+		frmCargarPartida.getContentPane().add(btn_continuar);
 		
 		btn_atras = new JButton("Atras");
 		btn_atras.setBackground(new Color(255, 20, 147));
 		btn_atras.setFont(new Font("Consolas", Font.BOLD, 11));
+		btn_atras.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btn_atras.setFocusPainted(false);
 		btn_atras.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
-				frame.dispose();
+				parent.setEnabled(true);
+				frmCargarPartida.dispose();
 			}
 		});
 
@@ -103,7 +116,7 @@ public class PantallaCargarPartidas {
 		panel.setBorder(new LineBorder(new Color(255, 20, 147), 4, true));
 		panel.setBackground(SystemColor.window);
 		panel.setBounds(73, 29, 436, 285);
-		frame.getContentPane().add(panel);
+		frmCargarPartida.getContentPane().add(panel);
 		panel.setLayout(null);
 
 		JPanel panel_1 = new JPanel();
@@ -126,47 +139,84 @@ public class PantallaCargarPartidas {
 
 		JPanel panel_2 = new JPanel();
 		panel_2.setBorder(new LineBorder(new Color(65, 105, 225), 3, true));
-		panel_2.setBounds(37, 210, 352, 53);
+		panel_2.setBounds(23, 200, 384, 64);
 		panel.add(panel_2);
 
 		JLabel lbl_pokemon1 = new JLabel();
 		if (trainer.getTeam()[0] != null) {
-			lbl_pokemon1 = new JLabel(trainer.getTeam()[0].getName());
+			try {
+				ImageIcon icon1 = new ImageIcon(new URL(trainer.getTeam()[0].getIconUrl()));
+				lbl_pokemon1 = new JLabel(icon1);
+				lbl_pokemon1.setToolTipText(trainer.getTeam()[0].getNick());
+			} catch (MalformedURLException e1) {
+				e1.printStackTrace();
+			}
 		}
 		lbl_pokemon1.setFont(new Font("Consolas", Font.PLAIN, 11));
 		lbl_pokemon1.setHorizontalAlignment(SwingConstants.CENTER);
 
 		JLabel lbl_pokemon2 = new JLabel();
 		if (trainer.getTeam()[1] != null) {
-			lbl_pokemon2 = new JLabel(trainer.getTeam()[1].getName());
+			try {
+				ImageIcon icon2 = new ImageIcon(new URL(trainer.getTeam()[1].getIconUrl()));
+				lbl_pokemon2 = new JLabel(icon2);
+				lbl_pokemon2.setToolTipText(trainer.getTeam()[1].getNick());
+			} catch (MalformedURLException e1) {
+				e1.printStackTrace();
+			}
+
 		}
 		lbl_pokemon2.setFont(new Font("Consolas", Font.PLAIN, 11));
 		lbl_pokemon2.setHorizontalAlignment(SwingConstants.CENTER);
 
 		JLabel lbl_pokemon3 = new JLabel();
 		if (trainer.getTeam()[2] != null) {
-			lbl_pokemon3 = new JLabel(trainer.getTeam()[2].getName());
+			try {
+				ImageIcon icon3 = new ImageIcon(new URL(trainer.getTeam()[2].getIconUrl()));
+				lbl_pokemon3 = new JLabel(icon3);
+				lbl_pokemon3.setToolTipText(trainer.getTeam()[2].getNick());
+			} catch (MalformedURLException e1) {
+				e1.printStackTrace();
+			}
 		}
 		lbl_pokemon3.setFont(new Font("Consolas", Font.PLAIN, 11));
 		lbl_pokemon3.setHorizontalAlignment(SwingConstants.CENTER);
 
 		JLabel lbl_pokemon4 = new JLabel();
 		if (trainer.getTeam()[3] != null) {
-			lbl_pokemon4 = new JLabel(trainer.getTeam()[3].getName());
+			try {
+				ImageIcon icon4 = new ImageIcon(new URL(trainer.getTeam()[3].getIconUrl()));
+				lbl_pokemon4 = new JLabel(icon4);
+				lbl_pokemon4.setToolTipText(trainer.getTeam()[3].getNick());
+			} catch (MalformedURLException e1) {
+				e1.printStackTrace();
+			}
 		}
 		lbl_pokemon4.setFont(new Font("Consolas", Font.PLAIN, 11));
 		lbl_pokemon4.setHorizontalAlignment(SwingConstants.CENTER);
 
 		JLabel lbl_pokemon5 = new JLabel();
 		if (trainer.getTeam()[4] != null) {
-			lbl_pokemon5 = new JLabel(trainer.getTeam()[4].getName());
+			try {
+				ImageIcon icon5 = new ImageIcon(new URL(trainer.getTeam()[4].getIconUrl()));
+				lbl_pokemon5 = new JLabel(icon5);
+				lbl_pokemon5.setToolTipText(trainer.getTeam()[4].getNick());
+			} catch (MalformedURLException e1) {
+				e1.printStackTrace();
+			}
 		}
 		lbl_pokemon5.setFont(new Font("Consolas", Font.PLAIN, 11));
 		lbl_pokemon5.setHorizontalAlignment(SwingConstants.CENTER);
 
 		JLabel lbl_pokemon6 = new JLabel();
 		if (trainer.getTeam()[5] != null) {
-			lbl_pokemon6 = new JLabel(trainer.getTeam()[5].getName());
+			try {
+				ImageIcon icon6 = new ImageIcon(new URL(trainer.getTeam()[5].getIconUrl()));
+				lbl_pokemon6 = new JLabel(icon6);
+				lbl_pokemon6.setToolTipText(trainer.getTeam()[5].getNick());
+			} catch (MalformedURLException e1) {
+				e1.printStackTrace();
+			}
 		}
 		lbl_pokemon6.setFont(new Font("Consolas", Font.PLAIN, 11));
 		lbl_pokemon6.setHorizontalAlignment(SwingConstants.CENTER);
@@ -179,12 +229,12 @@ public class PantallaCargarPartidas {
 		panel_2.add(lbl_pokemon5);
 		panel_2.add(lbl_pokemon6);
 
-		JLabel lbl_jugador = new JLabel("nick: " + trainer.getName());
+		JLabel lbl_jugador = new JLabel("Nick: " + trainer.getName());
 		lbl_jugador.setFont(new Font("Consolas", Font.PLAIN, 11));
 		lbl_jugador.setBounds(228, 87, 119, 23);
 		panel.add(lbl_jugador);
 
-		JLabel lbl_nivel = new JLabel("nivel: " + trainer.getLevel());
+		JLabel lbl_nivel = new JLabel("Nivel: " + trainer.getLevel());
 		lbl_nivel.setFont(new Font("Consolas", Font.PLAIN, 11));
 		lbl_nivel.setBounds(228, 116, 106, 13);
 		panel.add(lbl_nivel);
@@ -196,19 +246,28 @@ public class PantallaCargarPartidas {
 		panel.add(lbl_imagenjugador);
 		btn_atras.setBounds(83, 324, 180, 45);
 
-		frame.getContentPane().add(btn_atras);
+		frmCargarPartida.getContentPane().add(btn_atras);
 
 		JPanel panel_3 = new JPanel();
 		panel_3.setBounds(73, 29, 436, 285);
 		panel_3.setBackground(SystemColor.menu);
-		frame.getContentPane().add(panel_3);
+		frmCargarPartida.getContentPane().add(panel_3);
 
 		lbl_background = new JLabel(new ImageIcon(scaledImage));
 		lbl_background.setBounds(0, 0, 584, 394);
-		frame.getContentPane().add(lbl_background);
+		frmCargarPartida.getContentPane().add(lbl_background);
 
 	
-		frame.setVisible(true);
+		frmCargarPartida.setVisible(true);
+		
+		// Agregar un WindowListener para escuchar el evento de cierre de la ventana
+		frmCargarPartida.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				// Habilitar el parent JFrame (MainFrame) cuando SecondFrame se cierra
+				parent.setEnabled(true);
+			}
+		});
 
 	}
 }

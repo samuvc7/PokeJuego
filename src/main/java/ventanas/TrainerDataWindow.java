@@ -42,9 +42,9 @@ public class TrainerDataWindow {
 		window.getContentPane().setBackground(new Color(135, 206, 235));
 		window.getContentPane().setLayout(null);
 		window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		window.setIconImage(Toolkit.getDefaultToolkit().getImage("images/pokebola.png"));
+		window.setIconImage(new ImageIcon(getClass().getClassLoader().getResource("pokebola.png")).getImage());
 		window.setSize(450, 225);
-		window.setLocationRelativeTo(null); // Centrar la ventana en la pantalla
+		window.setLocationRelativeTo(parent); // Centrar la ventana en la pantalla
 		
 		// Nombre
 		JLabel lbl_name = new JLabel(trainer.getName());
@@ -71,9 +71,9 @@ public class TrainerDataWindow {
 		JLabel lbl_trainerImage = new JLabel();
 		lbl_trainerImage.setHorizontalAlignment(SwingConstants.CENTER);
 		lbl_trainerImage.setBounds(10, 48, 64, 124);
-		ImageIcon trainerSprite = new ImageIcon(Toolkit.getDefaultToolkit().getImage("images/Entrenador1.png"));
+		ImageIcon trainerSprite = new ImageIcon(getClass().getClassLoader().getResource("Entrenador1.png"));
 		if(trainer.getStyle() == 2) {
-			 trainerSprite = new ImageIcon(Toolkit.getDefaultToolkit().getImage("images/Entrenador2.png"));
+			 trainerSprite = new ImageIcon(getClass().getClassLoader().getResource("Entrenador2.png"));
 		}
 		lbl_trainerImage.setIcon(trainerSprite);
 		window.getContentPane().add(lbl_trainerImage);
@@ -96,7 +96,7 @@ public class TrainerDataWindow {
 		}
 		
 		// Fondo
-		ImageIcon image_background = new ImageIcon("images/databg.png");
+		ImageIcon image_background = new ImageIcon(getClass().getClassLoader().getResource("databg.png"));
 		JLabel lbl_bg = new JLabel(image_background);
 		lbl_bg.setBackground(new Color(255, 255, 255));
 		lbl_bg.setBounds(0, 0, 436, 188);

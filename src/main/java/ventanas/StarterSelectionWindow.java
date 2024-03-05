@@ -2,9 +2,12 @@ package ventanas;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Toolkit;
+import java.awt.Window.Type;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -48,7 +51,7 @@ public class StarterSelectionWindow {
 		
 		frmPokochi = new JFrame();
 		frmPokochi.setResizable(false);
-		frmPokochi.setIconImage(Toolkit.getDefaultToolkit().getImage("images/pokebola.png"));
+		frmPokochi.setIconImage(new ImageIcon(getClass().getClassLoader().getResource("pokebola.png")).getImage());
 		frmPokochi.getContentPane().setForeground(Color.BLACK);
 		frmPokochi.setFont(new Font("Consolas", Font.PLAIN, 12));
 		frmPokochi.setTitle("Pokochi");
@@ -120,6 +123,7 @@ public class StarterSelectionWindow {
 		panel_planta.setLayout(null);
 
 		btn_grassType = new JButton("Elegir");
+		btn_grassType.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btn_grassType.setBounds(65, 290, 120, 30);
 		btn_grassType.setBackground(new Color(237, 247, 204));
 		btn_grassType.setFocusPainted(false);
@@ -134,6 +138,7 @@ public class StarterSelectionWindow {
 		frmPokochi.getContentPane().add(btn_grassType);
 
 		btn_fireType = new JButton("Elegir");
+		btn_fireType.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btn_fireType.setBounds(235, 290, 120, 30);
 		btn_fireType.setBackground(new Color(253, 206, 207));
 		btn_fireType.setFocusPainted(false);
@@ -148,6 +153,7 @@ public class StarterSelectionWindow {
 		frmPokochi.getContentPane().add(btn_fireType);
 
 		btn_waterType = new JButton("Elegir");
+		btn_waterType.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btn_waterType.setBounds(405, 290, 120, 30);
 		btn_waterType.setBackground(new Color(223, 236, 255));
 		btn_waterType.setFocusPainted(false);
@@ -263,7 +269,7 @@ public class StarterSelectionWindow {
         
 		// Crear un JPanel para organizar los componentes
 		JPanel panel = new JPanel(new BorderLayout());
-        frame.setIconImage(Toolkit.getDefaultToolkit().getImage("images/pokebola.png"));
+        frame.setIconImage(new ImageIcon(getClass().getClassLoader().getResource("pokebola.png")).getImage());
 
 		// Crear un JLabel para mostrar el nombre del Pokémon
 		JLabel lblNombrePokemon = new JLabel("¡Has elegido a " + nombrePokemon + "!");
@@ -292,6 +298,7 @@ public class StarterSelectionWindow {
 
 		// Botón para volver a elegir el Pokémon
 		JButton btnElegirPokemon = new JButton("Volver a elegir");
+		btnElegirPokemon.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnElegirPokemon.setBackground(new Color(204, 211, 222));
 		btnElegirPokemon.setFocusPainted(false);
 		btnElegirPokemon.setFont(new Font("Consolas", Font.PLAIN, 11));
@@ -308,6 +315,7 @@ public class StarterSelectionWindow {
 
 		// Botón para jugar
 		JButton btnJugar = new JButton("Comenzar");
+		btnJugar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnJugar.setBackground(new Color(204, 211, 222));
 		btnJugar.setFocusPainted(false);
 		btnJugar.setFont(new Font("Consolas", Font.PLAIN, 11));
@@ -319,13 +327,14 @@ public class StarterSelectionWindow {
 				try {
 					pokemon = new Pokemon(pkname, 5);
 					trainer.addPokemon(pokemon, 0);
-
+					
 					/// --- Guardamos el datetime de la ultima conexion en el trainer 
 					LocalDateTime ahora= LocalDateTime.now();//("01/01/01(00:00)")
 					trainer.setLastConnected(ahora.format(DateTimeFormatter.ofPattern("uuuu/MM/dd (HH:mm)")));
+
 					SaveData.saveTrainer(trainer);
 					
-					new MenuWindow(pokemon, trainer);
+					new MenuWindow(trainer);
 	                frame.dispose(); // asumiendo que "frmPokochi" es la instancia de tu ventana actual
 	                
 				} catch (IOException e1) {

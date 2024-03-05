@@ -42,7 +42,7 @@ public class ElegirEntrenador extends JFrame{
 		frmPersonalizacin.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmPersonalizacin.setLocationRelativeTo(null);
 		frmPersonalizacin.setResizable(false);
-		frmPersonalizacin.setIconImage(Toolkit.getDefaultToolkit().getImage("images/pokebola.png"));
+		frmPersonalizacin.setIconImage(new ImageIcon(getClass().getClassLoader().getResource("pokebola.png")).getImage());
 		frmPersonalizacin.getContentPane().setLayout(null);
 		
 		JLabel lbl_info = new JLabel("Seleccione el género de su personaje");
@@ -65,7 +65,7 @@ public class ElegirEntrenador extends JFrame{
 		boton_chico.setBorderPainted(false);
 		boton_chico.setContentAreaFilled(false);
 		boton_chico.setFocusPainted(false);
-		ImageIcon iconChico = new ImageIcon(Toolkit.getDefaultToolkit().getImage("images/Entrenador1.png"));
+		ImageIcon iconChico = new ImageIcon(getClass().getClassLoader().getResource("Entrenador1.png"));
 		boton_chico.setIcon(iconChico);
 
 		panel_azul.add(boton_chico);
@@ -91,7 +91,7 @@ public class ElegirEntrenador extends JFrame{
 		boton_chica.setFocusPainted(false);
 		boton_chica.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		boton_chica.setBounds(0, 0, 170, 181);
-		ImageIcon iconChica = new ImageIcon(Toolkit.getDefaultToolkit().getImage("images/Entrenador2.png"));
+		ImageIcon iconChica = new ImageIcon(getClass().getClassLoader().getResource("Entrenador2.png"));
 		boton_chica.setIcon(iconChica);
 		panel_rosa.add(boton_chica);
 		
@@ -127,7 +127,7 @@ public class ElegirEntrenador extends JFrame{
 		final JFrame frame = new JFrame("Entrenador");
 		frame.setTitle("Personalización");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE );
-		frame.setIconImage(Toolkit.getDefaultToolkit().getImage("images/pokebola.png"));
+		frame.setIconImage(new ImageIcon(getClass().getClassLoader().getResource("pokebola.png")).getImage());
 		frame.setResizable(false);
 		
 		JPanel panel = new JPanel();
@@ -145,12 +145,12 @@ public class ElegirEntrenador extends JFrame{
 		lbl_imagenEntrenador.setHorizontalAlignment(SwingConstants.CENTER);
 		if(genero.equals("chica")) {
 			
-			ImageIcon iconChica = new ImageIcon(Toolkit.getDefaultToolkit().getImage("images/Entrenador2.png"));
+			ImageIcon iconChica = new ImageIcon(getClass().getClassLoader().getResource("Entrenador2.png"));
 			lbl_imagenEntrenador.setIcon(iconChica);
 			
 		}else {
 			
-			ImageIcon iconChico = new ImageIcon(Toolkit.getDefaultToolkit().getImage("images/Entrenador1.png"));
+			ImageIcon iconChico = new ImageIcon(getClass().getClassLoader().getResource("Entrenador1.png"));
 			lbl_imagenEntrenador.setIcon(iconChico);
 		}
 		
@@ -178,6 +178,7 @@ public class ElegirEntrenador extends JFrame{
 		buttonPanel.setBounds(0, 214, 447, 31);
 		
 		JButton btn_aceptar = new JButton("Aceptar");
+		btn_aceptar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btn_aceptar.setBounds(74, 219, 85, 21);
 		btn_aceptar.addActionListener(new ActionListener() {
 			
@@ -206,6 +207,7 @@ public class ElegirEntrenador extends JFrame{
 		buttonPanel.add(btn_aceptar);
 		
 		JButton btn_cancelar = new JButton("Cancelar");
+		btn_cancelar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btn_cancelar.setBounds(312, 219, 85, 21);
 		btn_cancelar.addActionListener(new ActionListener() {
 			
