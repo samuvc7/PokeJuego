@@ -11,6 +11,7 @@ public class Trainer implements Serializable {
 	private int partner;
 	private int style;
 	private int[] completed_quests;
+	private int money;
 
 	public Trainer(String name, int style) {
 		this.name = name;
@@ -19,6 +20,7 @@ public class Trainer implements Serializable {
 		this.setPartner(0);
 		this.setStyle(style);
 		completed_quests = new int[0];
+		this.money = 0;
 		
 	}
 	
@@ -30,7 +32,7 @@ public class Trainer implements Serializable {
 		this.setPartner(0);
 		this.setStyle(1);
 		completed_quests = new int[0];
-
+		this.money = 0;
 		
 	}
 
@@ -95,6 +97,14 @@ public class Trainer implements Serializable {
 
 	public void setCompleted_quests(int[] completed_quests) {
 		this.completed_quests = completed_quests;
+	}
+
+	public int getMoney() {
+		return money;
+	}
+
+	public void setMoney(int money) {
+		this.money = money;
 	}
 
 }

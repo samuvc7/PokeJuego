@@ -410,6 +410,58 @@ public class Pokemon implements Serializable {
 			}
 		}
 	}
+	
+	public void levelUp() {
+		this.setLevel(this.getLevel() + 1);
+		
+		JSONArray stats = this.pokemonInfo.getJSONArray("stats");
+		float levelFactor = (float) this.level / 100;
+
+		float baseHP = 0;
+		float baseAttack = 0;
+		float baseDefense = 0;
+		float baseSpAtk = 0;
+		float baseSpDef = 0;
+		float baseSpeed = 0;
+
+		for (int i = 0; i < stats.length(); i++) {
+			JSONObject stat = stats.getJSONObject(i).getJSONObject("stat");
+			String statName = stat.getString("name");
+			float baseStatValue = (float) stats.getJSONObject(i).getInt("base_stat");
+
+			switch (statName) {
+			case "hp":
+				baseHP = baseStatValue;
+				break;
+			case "attack":
+				baseAttack = baseStatValue;
+				break;
+			case "defense":
+				baseDefense = baseStatValue;
+				break;
+			case "special-attack":
+				baseSpAtk = baseStatValue;
+				break;
+			case "special-defense":
+				baseSpDef = baseStatValue;
+				break;
+			case "speed":
+				baseSpeed = baseStatValue;
+				break;
+			default:
+				break;
+			}
+		}
+
+		// Calcular las estadísticas
+		this.max_hp = 10 + (levelFactor * (baseHP * 2)) + this.level;
+		this.cur_hp = max_hp;
+		this.atk = 5 + (levelFactor * (baseAttack * 2));
+		this.def = 5 + (levelFactor * (baseDefense * 2));
+		this.sp_atk = 5 + (levelFactor * (baseSpAtk * 2));
+		this.sp_def = 5 + (levelFactor * (baseSpDef * 2));
+		this.speed = 5 + (levelFactor * (baseSpeed * 2));
+	}
 
 	public static String calculateGender(int gender_rate) {
 		String gender;
