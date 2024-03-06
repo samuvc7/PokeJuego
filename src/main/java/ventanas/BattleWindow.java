@@ -272,6 +272,7 @@ public class BattleWindow {
 
 		// =================================================
 
+		// Recargar paneles de los pokémon
 		panel_vida.setVisible(false);
 		panel_vida_1.setVisible(false);
 		panel_vida.setVisible(true);
@@ -390,6 +391,9 @@ public class BattleWindow {
 				btn.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						dialog.dispose();
+						btnLuchar.setEnabled(false);
+						btnPokemon.setEnabled(false);
+						btnHuir.setEnabled(false);
 						changePoke(pk);
 
 					}
@@ -544,8 +548,8 @@ public class BattleWindow {
 					txtArea_ctrl.append(String.valueOf(texto.charAt(index)));
 					index++;
 					btnLuchar.setEnabled(false);
-    btnPokemon.setEnabled(false);
-    btnHuir.setEnabled(false);
+					btnPokemon.setEnabled(false);
+					btnHuir.setEnabled(false);
 				} else {
 					timer.stop(); // Detener el timer cuando se haya escrito todo el texto
 					btnLuchar.setEnabled(true);
